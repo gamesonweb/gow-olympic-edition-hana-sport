@@ -11,6 +11,7 @@ import Matchmaking from "./pages/Matchmaking.tsx";
 import Controller from "./pages/Controller.tsx";
 import Game from "./pages/Game.tsx";
 import Ranking from "./pages/Ranking.tsx";
+import HowTo from "./pages/HowTo.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="/controller" element={<Controller/>}/>
                 <Route path="/game" element={<Game/>}/>
                 <Route path="/ranking" element={<Ranking/>}/>
+                <Route path="/howto" element={<HowTo/>}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>,

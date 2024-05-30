@@ -1,4 +1,4 @@
-﻿import "./vehicule.css";
+﻿import "./vehicle.css";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import {useRef, useState} from "react";
