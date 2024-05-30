@@ -1,0 +1,67 @@
+﻿.cp-background {
+    background-image: url("./assets/common/Background.png");
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+}
+
+.cp-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 25%;
+    left: 0;
+    right: 0;
+    margin: 0 30px;
+    padding: 20px;
+    background-image: url("./assets/credits/CreditsBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+}
+
+.cp-back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("./assets/common/GreyButtonBackground.png") !important;
+}
+
+.cp-back:hover {
+    background-image: url("./assets/common/GreyButtonBackgroundHover.png") !important;
+}
+
+.cp-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cp-preview > img {
+    width: auto;
+    height: 200px
+}
+
+.cp-scroll {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 300px;
+    width: 80%;
+    padding: 10px;
+    margin: 10px;
+}
+
+.cp-instruction {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
