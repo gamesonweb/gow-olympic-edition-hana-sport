@@ -1,0 +1,21 @@
+﻿.k-choose {
+ margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.k-choose > div {
+    margin: 10px;
+    cursor: pointer;
+    background-color: #ffffffaa;
+    padding: 10px;
+    border: 2px solid white;
+}
+
+.k-choose > div > p {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
