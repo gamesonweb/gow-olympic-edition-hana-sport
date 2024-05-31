@@ -20,7 +20,6 @@ import WorldScene from "./scenes/world";
 import {WebGPUEngine} from '@babylonjs/core';
 import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
-import {AbstractEngine} from "@babylonjs/core/Engines/abstractEngine";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -75,7 +74,7 @@ export const PageContext = createContext({
             vehicle: 0,
             username: '',
             keyboard: '',
-            mode: '',
+            map: '',
         }, game: {
             position: 0,
             currentLap: 0,
@@ -149,7 +148,7 @@ const gameData = {
         vehicle: -1,
         username: "",
         keyboard: "",
-        mode: "",
+        map: "",
     },
 }
 

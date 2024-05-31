@@ -7,15 +7,8 @@ import {PageType} from "../../PageType";
 
 function MainMenu() {
     const page = useContext(PageContext);
-    const singlePlayer = () => {
-        console.log("Single Player");
-        page.data.selection.mode = "singleplayer";
-        page.setPage(PageType.Vehicle);
-    }
     
     const multiPlayer = () => {
-        console.log("Multi Player");
-        page.data.selection.mode = "multiplayer";
         page.setPage(PageType.Vehicle);
     }
     return (
@@ -26,7 +19,6 @@ function MainMenu() {
                     <img src={TitleBackground} alt='Title Background'/>
                 </div>
                 <div className='mm-buttons'>
-                    <a onClick={singlePlayer}>Single Player</a>
                     <a onClick={multiPlayer}>Multi Player</a>
                     <a onClick={() => page.setPage(PageType.Credits)}>Credits</a>
                     <a onClick={() => page.setPage(PageType.HowTo)}>How to play</a>
