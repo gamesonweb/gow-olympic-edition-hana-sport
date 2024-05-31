@@ -26,6 +26,11 @@ body {
     position: absolute;
     right: 0;
     bottom: 0;
+    pointer-events: none;
+}
+
+#game > * {
+    pointer-events: all;
 }
 
 .title {
