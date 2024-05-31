@@ -4,9 +4,7 @@ import Utils from "../Utils";
 import {PageContext} from "../../index";
 
 function Game() {
-    const [time, setTime] = useState("");
     const {data} = useContext(PageContext);
-    const startTime = Date.now();
 
     const endRank = useRef<HTMLDivElement>(null);
     const countdownRef = useRef<HTMLParagraphElement>(null);
@@ -21,17 +19,6 @@ function Game() {
     }, [data.game.finished]);
     useEffect(() => {
         showEndRank(false);
-        const interval = setInterval(() => {
-            const elapsedTime = Date.now() - startTime;
-            const seconds = Math.floor(elapsedTime / 1000);
-            const minutes = Math.floor(seconds / 60);
-            setTime(
-                `${minutes.toString().padStart(2, "0")}:${(seconds % 60)
-                    .toString()
-                    .padStart(2, "0")}`
-            );
-        }, 1000);
-        return () => clearInterval(interval);
     }, []);
     
     useEffect(() => {
@@ -46,7 +33,7 @@ function Game() {
     return (
         <>
             <div className='g-time'>
-                <p>{time}</p>
+                <p>{data.game.time}</p>
             </div>
             <div className='g-rank' ref={endRank}>
                 <p>{Utils.convertPosition(data.game.position)} Race</p>

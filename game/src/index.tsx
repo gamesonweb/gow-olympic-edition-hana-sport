@@ -105,7 +105,8 @@ export const PageContext = createContext({
             currentLap: 0,
             totalLaps: 0,
             finished: true,
-            countdown: 0
+            countdown: 0,
+            time: '0:00.000'
         },
         maps: [{
             name: 'name',
@@ -142,7 +143,8 @@ const gameData = {
         currentLap: 1,
         totalLaps: 3,
         finished: false,
-        countdown: 3
+        countdown: 3,
+        time: '0:00.000'
     },
     selection: {
         vehicle: 0,
@@ -451,4 +453,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <PageProvider/>
     </>
     ,
-)
+);

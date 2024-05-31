@@ -21,9 +21,9 @@ function HowTo() {
                 <div className="ht-content">
                     <div className="ht-instruction">
                         <h2>How to play</h2>
-                        <p>Use the arrow keys to move your kart.</p>
-                        <p>Press the space bar to use power-ups.</p>
-                        <p>Collect coins to buy power-ups.</p>
+                        <p>Use Z or W to accelerate. Use S to brake.</p>
+                        <p>Use Q or A to turn left. Use D to turn right.</p>
+                        <p>Do as many laps as needed and be the first to cross the finish line!</p>
                     </div>
                     <div className='submit'>
                         <button className='ht-back' onClick={back}>
