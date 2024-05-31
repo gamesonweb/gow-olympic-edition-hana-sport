@@ -7,10 +7,7 @@ import {PageType} from "../../PageType";
 
 function MainMenu() {
     const page = useContext(PageContext);
-    
-    const multiPlayer = () => {
-        page.setPage(PageType.Vehicle);
-    }
+
     return (
         <>
             <div className='mm-background'>
@@ -19,7 +16,7 @@ function MainMenu() {
                     <img src={TitleBackground} alt='Title Background'/>
                 </div>
                 <div className='mm-buttons'>
-                    <a onClick={multiPlayer}>Multi Player</a>
+                    <a onClick={() => page.setPage(PageType.Map)}>Multi Player</a>
                     <a onClick={() => page.setPage(PageType.Credits)}>Credits</a>
                     <a onClick={() => page.setPage(PageType.HowTo)}>How to play</a>
                     <a onClick={() => page.setPage(PageType.Company)}>HANA GAMES</a>

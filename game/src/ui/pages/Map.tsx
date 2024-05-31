@@ -28,11 +28,11 @@ function Map() {
     };
 
     const submit = () => {
-        console.log("Submit clicked");
         let data = page.data;
         data.selection.map = index;
         page.setData(data);
         console.log("Map selected: " + index);
+        page.setPage(PageType.Vehicle);
     };
 
     const back = () => {
@@ -74,7 +74,7 @@ function Map() {
                         </div>
                     </div>
                     <div className='submit'>
-                        <button onClick={submit}>Start</button>
+                        <button onClick={submit}>Next</button>
                         <button className='v-back' onClick={back}>
                             Back
                         </button>

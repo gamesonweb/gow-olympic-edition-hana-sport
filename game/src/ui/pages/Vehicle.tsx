@@ -33,6 +33,7 @@ function Vehicle() {
         data.selection.vehicle = index;
         page.setData(data);
         console.log("Vehicle selected: " + index);
+        page.setPage(PageType.Matchmaking);
     };
 
     const back = () => {
