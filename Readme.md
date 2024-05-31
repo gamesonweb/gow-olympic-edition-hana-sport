@@ -1,27 +1,49 @@
 # Kart Clash
 
 ## Equipe
+
 M2 MIAGE, Sophia Antipolis
 
 - Sébastien AGLAE (sebastienaglae) sebastien.aglae@etu.unice.fr
 - Mike CHIAPPE (Mimi8298) mike.chiappe@etu.unice.fr
 
 ## Installation
-```bash
 
+Pour installer le jeu:
+
+```bash
+cd game
+npm install
+```
+
+Pour installer le serveur:
+
+```bash
+cd server
 ```
 
 ## Lancement
+
+Pour lancer le jeu:
+
 ```bash
-
+cd game
+npm run start
 ```
----
-## Informations
 
-- Le jeu est disponible sur https://xxxxxx.xx
-- La vidéo de présentation est disponible sur https://xxxxxx.xx
+Pour lancer le serveur:
+
+```bash
+cd server
+```
+
+---
+
+## Informations
+- Le jeu est disponible sur https://assets.atrasis.net/kartclash/index.html
+- La vidéo de présentation est disponible sur https://assets.atrasis.net/kartclash/video.mp4
   </br>
-  Nous vous recommendons d'utiliser Google Chrome pour jouer au jeu car il supporte officiellement **WebGPU** ! Sinon, vous serez redirigé vers WebGl. (WebGPU est plus performant que WebGl)
+  Nous vous recommendons d'utiliser Google Chrome pour jouer au jeu car il supporte officiellement **WebGPU** ! Sinon, vous serez redirigé vers WebGl. (WebGPU est plus performant que WebGl :))
 
 ## Justification des choix
 
@@ -33,7 +55,7 @@ C'est un jeu de karting offrant un **mode solo** et un **mode en ligne**. Vous p
 
 ## Comment jouer
 
-Le jeu prend en charge les claviers **AZERTY** et **QWERTY**, et il est également compatible avec les smartphones pour une expérience de jeu optimale.
+Le jeu prend en charge les claviers **AZERTY** et **QWERTY**.
 
 - Lorsque vous lancez le jeu pour la première fois, vous devrez entrer un pseudo et choisir le type de clavier que vous utilisez.
 
@@ -46,17 +68,11 @@ Le jeu prend en charge les claviers **AZERTY** et **QWERTY**, et il est égaleme
 </br>
 
 Azerty / Qwerty :
+
 - **Z** / **W** : Accélérer
 - **S** : Freiner
 - **Q** / **A** : Gauche
 - **D** : Droite
-
-</br>
-
-Smartphone :
-- **Joystick** : Accélérer
-- **Frein** : Freiner
-- **Joystick** : Gauche / Droite
 
 ## Autres
 
@@ -67,15 +83,11 @@ https://www.figma.com/design/g7iOd4V6zGwgySe5UnGnWP/GOW2024?node-id=0-1&t=4IBVqL
 
 ## Technologies utilisées
 
-Nous avons opté pour BabylonJS 7.9.0 et React pour notre projet, combinant ainsi la puissance de la bibliothèque de rendu 3D de BabylonJS avec la flexibilité et la facilité de développement de l'interface utilisateur offerte par React.
+Nous avons opté pour BabylonJS 7.9.0 et React pour notre projet, combinant ainsi la puissance de la bibliothèque de rendu 3D de BabylonJS avec la flexibilité et la facilité de développement de l'interface utilisateur offerte par React. Nous avons une API en Go et un serveur de jeu en websocket. Nous avons quelques script C# pour l'exportation de certains éléments de jeu depuis Unity.
 
 ## Phase de développement
 
-Nous avons entamé le projet BabylonJS le 30 mai. En tant que fondateurs d'un studio de jeux vidéo (Hana Games), nous consacrons tout notre temps libre au développement de Gang Stars, un jeu mobile. Pour cette dernière édition, après trois participations, nous avons décidé de créer un jeu dans les délais impartis.
-Nous utilisons Unity comme un intermédiaire dans notre processus de développement. Nous concevons nos mondes et éléments de jeu dans Unity, puis nous les exportons vers BabylonJS à l'aide de l'outil "UnityGLTF" de KhronosGroup. Cette approche nous permet de bénéficier des avantages de Unity en matière de conception et de flux de travail, tout en exploitant les fonctionnalités et les performances de BabylonJS pour le rendu 3D dans notre jeu. Notre structure de code suit également celle d'Unity, avec l'utilisation de composants dans des gameobjects. Cela facilite la transition et la collaboration entre les membres de l'équipe, car nous utilisons une méthode familière et efficace pour organiser notre code et nos ressources.
+Nous avons entamé le projet BabylonJS le 30 mai. En tant que fondateurs d'un studio de jeux vidéo (Hana Games), nous consacrons tout notre temps libre au développement de Gang Stars, un jeu mobile. Pour cette dernière édition, après deux participations, nous avons décidé de créer un jeu dans les délais impartis.
+Nous utilisons Unity comme un intermédiaire dans notre processus de développement. Nous concevons nos mondes et éléments de jeu dans Unity, puis nous les exportons vers BabylonJS à l'aide de l'outil "UnityGLTF" de KhronosGroup. Les checkpoints, les modèles et les points de spawn sont exportés depuis Unity via un script C# [kart_map1.json](https://github.com/gamesonweb/gow-olympic-edition-hana-sport/blob/6691c28f529e84482cdb3b3241d158cf63bac972/game/src/assets/levels/kart_map1.json). Cette approche nous permet de bénéficier des avantages de Unity en matière de conception et de flux de travail, tout en exploitant les fonctionnalités et les performances de BabylonJS pour le rendu 3D dans notre jeu. Notre structure de code suit également celle d'Unity, avec l'utilisation de composants dans des gameobjects. Cela facilite la transition et la collaboration entre les membres de l'équipe, car nous utilisons une méthode familière et efficace pour organiser notre code et nos ressources.
 
 ## Capture d'écran
-
-## Hana Games
-
-## Remerciements
