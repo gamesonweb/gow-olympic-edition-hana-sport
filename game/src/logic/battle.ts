@@ -96,6 +96,12 @@ export class Battle {
     public update(t: number): void {
         let i = 0;
         for (const character of this._playerCharacter) {
+            const movementComponent = character.findComponent(MovementComponent);
+            if (!movementComponent) {
+                // character destroyed
+                continue;
+            }
+
             const currentCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[this._playerCurrentTurnCheckpointIndex[i]]) as Checkpoint;
             const nextCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[(this._playerCurrentTurnCheckpointIndex[i] + 1) % this._level.metadata.checkpoints.length]) as Checkpoint;
             const checkpointRay = [
@@ -105,7 +111,7 @@ export class Battle {
             // get distance of the character from the line formed by the two checkpoints
             const characterPosition = character.position;
             const characterDistanceToCheckpoint = this._distanceFromLine(characterPosition, checkpointRay[0], checkpointRay[1]);
-            if (characterDistanceToCheckpoint.length() > 5) {
+            if (characterDistanceToCheckpoint.length() > 6.5) {
                 character.position = currentCheckpoint.position;
                 character.rotation = currentCheckpoint.rotation;
                 character.getComponent(MovementComponent).resyncPhysics();

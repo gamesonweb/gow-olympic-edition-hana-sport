@@ -9,7 +9,7 @@ export default class ApiClient {
     private _connected: boolean = false;
     private _handlers: Map<number, (message: Message) => void> = new Map();
     private _sessionInfo: { id: string, name: string };
-    private _connecting: boolean = false;
+    private _connectingPromise: Promise<void>;
 
     public onConnectionError: () => void;
 
@@ -36,7 +36,7 @@ export default class ApiClient {
     }
 
     public isConnecting(): boolean {
-        return this._connecting;
+        return this._connectingPromise !== undefined;
     }
 
     public get sessionId(): string {
@@ -47,8 +47,10 @@ export default class ApiClient {
         if (this._connected) {
             return Promise.resolve();
         }
-        this._connecting = true;
-        return new Promise<void>((resolve, reject) => {
+        if (this._connectingPromise) {
+            return this._connectingPromise;
+        }
+        return this._connectingPromise = new Promise<void>((resolve, reject) => {
             if (this._socket) {
                 this._socket.close();
             }
@@ -73,13 +75,13 @@ export default class ApiClient {
                         console.error('[ApiClient] Invalid message ID: ' + id);
                     }
                 };
-                this._connecting = false;
+                this._connectingPromise = undefined;
 
                 resolve();
             };
             this._socket.onerror = (event) => {
                 console.error('[ApiClient] Connection error: ' + event);
-                this._connecting = false;
+                this._connectingPromise = undefined;
                 reject();
             };
             this._socket.onclose = () => {
@@ -90,7 +92,7 @@ export default class ApiClient {
                     }
                 }
                 this._connected = false;
-                this._connecting = false;
+                this._connectingPromise = undefined;
             };
         });
     }

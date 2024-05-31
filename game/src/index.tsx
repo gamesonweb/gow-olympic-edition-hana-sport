@@ -25,16 +25,19 @@ import ConnectToServer from "./ui/pages/ConnectToServer";
 import Waiting from "./ui/pages/Waiting";
 import ApiClient from "./api/client";
 import {
+    BattleClientEntityUpdateMsg,
     BattleClientPlayerFinishMsg,
-    BattleClientReadyMsg, BattleHeartbeatMsg,
+    BattleClientReadyMsg, BattleEntity, BattleFinishMsg, BattleHeartbeatMsg,
     BattleInitDataMsg, BattleServerCheckpointUpdateMsg,
-    BattleServerEntityUpdateMsg, BattleState, BattleStateMap, BattleStateUpdateMsg,
+    BattleServerEntityUpdateMsg, BattleServerPlayerFinishMsg, BattleState, BattleStateUpdateMsg,
     CompleteMatchmakingMsg,
     LeaveMatchmakingMsg,
-    MatchmakingStatusMsg
+    MatchmakingStatusMsg,
+    Vector3 as PbVector3
 } from "./api/pb/game_pb";
 import MovementComponent from "./logic/gameobject/component/movement";
 import {GameObjectType} from "./logic/gameobject/gameObject";
+import Character from "./logic/gameobject/character";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -250,19 +253,31 @@ export const PageProvider = () => {
 export const RankingContext = createContext({
     rankings: [{
         rank: 0,
+        id: 'id',
         name: 'name',
-        time: '0:00.000'
-    }]
+        time: '0:00.000',
+        timeRaw: 0
+    }],
+    setRankings: (rankings: any) => {
+    }
 })
+const timeToString = (time: number) => {
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    const millis = Math.floor((time - Math.floor(time)) * 1000);
+    return `${mins}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`
+}
 
 export const RankingProvider = () => {
     const [rankings, setRankings] = useState([{
         rank: 0,
+        id: 'id',
         name: 'name',
-        time: '0:00.000'
+        time: '0:00.000',
+        timeRaw: 0
     }])
     return (
-        <RankingContext.Provider value={{rankings}}>
+        <RankingContext.Provider value={{rankings, setRankings}}>
             <Ranking/>
         </RankingContext.Provider>
     )
@@ -270,6 +285,7 @@ export const RankingProvider = () => {
 
 const BabylonScene = () => {
         const {data, setData, page, setPage} = useContext(PageContext);
+        const {rankings, setRankings} = useContext(RankingContext);
         const canvasRef = useRef<HTMLCanvasElement>(null);
         const engineRef = useRef<any>(null);
 
@@ -295,6 +311,7 @@ const BabylonScene = () => {
                         let currentScene: WorldScene | null = null;
                         let currentTime = 0;
                         let currentBattleState = 0;
+                        let finishTime = null;
 
                         const setBattleState = (state: number) => {
                             currentBattleState = state;
@@ -310,10 +327,20 @@ const BabylonScene = () => {
                                         ...data,
                                     })
                                     break;
+                                case BattleState.RACING:
+                                    setPage(PageType.Game);
+                                    data.game.countdown = 0;
+                                    data.game.finished = false;
+                                    data.game.time = timeToString(currentTime);
+                                    setData({
+                                        ...data,
+                                    })
+                                    break;
                                 default:
                                     setPage(PageType.Game);
                                     data.game.countdown = 0;
                                     data.game.finished = false;
+                                    data.game.time = timeToString(finishTime || currentTime);
                                     setData({
                                         ...data,
                                     })
@@ -329,16 +356,21 @@ const BabylonScene = () => {
                                     const gameObject = level.gameObjectManager.getObject(entity.getId());
                                     if (!gameObject) {
                                         console.error('Entity not found', entity.getId());
-                                        return;
+                                        continue;
                                     }
                                     if (gameObject.type !== GameObjectType.Character) {
                                         console.error('Invalid entity type', gameObject.type);
-                                        return;
+                                        continue;
                                     }
+                                    const character = gameObject as Character;
+                                    if (character.player.id === data.id) {
+                                        continue;
+                                    }
+
                                     const movementComponent = gameObject.findComponent(MovementComponent);
                                     if (!movementComponent) {
                                         console.error('Movement component not found');
-                                        return;
+                                        continue;
                                     }
                                     const pbPosition = entity.getPosition();
                                     const pbRotation = entity.getRotation();
@@ -363,14 +395,50 @@ const BabylonScene = () => {
                                 battle.serverSetPlayerCurrentTurn(playerIndex, message.getTurn(), message.getCheckpointIndex());
                             }
                         });
-                        ApiClient.instance.addHandler(10, (message: BattleServerCheckpointUpdateMsg) => {
+                        ApiClient.instance.addHandler(10, (message: BattleServerPlayerFinishMsg) => {
                             if (currentScene) {
                                 console.log('Player finished', data.id);
+                                const character = currentScene.level.battle.getPlayerCharacterById(message.getPlayerId());
+                                if (character) {
+                                    currentScene.level.gameObjectManager.removeObject(character);
+
+                                    const rankingIndex = rankings.findIndex(r => r.id === message.getPlayerId());
+                                    if (rankingIndex >= 0) {
+                                        rankings[rankingIndex] = {
+                                            rank: rankings[rankingIndex].rank,
+                                            id: rankings[rankingIndex].id,
+                                            name: rankings[rankingIndex].name,
+                                            time: timeToString(message.getTotalTime()),
+                                            timeRaw: message.getTotalTime()
+                                        }
+                                        // rebuild rankings
+                                        rankings.sort((a, b) => a.timeRaw - b.timeRaw);
+                                        setRankings([...rankings]);
+                                    } else {
+                                        console.error('Ranking not found', message.getPlayerId(), rankings);
+                                    }
+                                    if (message.getPlayerId() === data.id) {
+                                        finishTime = message.getTotalTime();
+                                        setPage(PageType.Ranking);
+                                    }
+                                }
                             }
                         });
-                        ApiClient.instance.addHandler(11, () => {
+                        ApiClient.instance.addHandler(11, (message: BattleFinishMsg) => {
                             if (currentScene) {
-                                console.log('Battle finished');
+                                const newRankings = message.getPlayersList().sort(x => x.getTotalTime()).map((ranking, index) => {
+                                    const totalSecs = ranking.getTotalTime();
+                                    return {
+                                        rank: index + 1,
+                                        id: ranking.getId(),
+                                        name: ranking.getName(),
+                                        time: timeToString(totalSecs),
+                                        timeRaw: totalSecs
+                                    }
+                                });
+                                rankings.splice(0, rankings.length, ...newRankings);
+
+                                setRankings(rankings);
                                 setPage(PageType.Ranking);
                             }
                         });
@@ -396,6 +464,18 @@ const BabylonScene = () => {
                             if (currentScene) {
                                 currentScene.dispose();
                             }
+                            const newRankings = message.getPlayersList().map((ranking, index) => {
+                                return {
+                                    rank: index + 1,
+                                    id: ranking.getId(),
+                                    name: ranking.getName(),
+                                    time: 'Waiting...',
+                                    timeRaw: 999999999999
+                                }
+                            });
+                            rankings.splice(0, rankings.length, ...newRankings);
+                            setRankings(rankings);
+
                             currentScene = new WorldScene(engine as any, sceneConfig, message);
                             currentScene.init().then(() => {
                                 const playerIndex = currentScene.level.battle.players.findIndex(p => p.id === data.id);
@@ -404,24 +484,58 @@ const BabylonScene = () => {
                                     return;
                                 }
                                 let endBattleSent = false;
-                                engine.runRenderLoop(() => {
+                                let timeSinceLastEntityUpdate = 0;
+                                const renderLoop = () => {
                                     currentScene!.update();
+                                    currentTime += engine.getDeltaTime() / 1000;
                                     data.game.currentLap = currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) + 1;
                                     data.game.totalLaps = currentScene!.level.metadata.turnCount;
                                     setData({
                                         ...data,
                                     });
-                                    if (currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) >= currentScene!.level.metadata.turnCount) {
+                                    if (currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) >= currentScene!.level.metadata.turnCount || true) {
                                         data.game.finished = true;
                                         setData({
                                             ...data,
                                         });
                                         if (!endBattleSent) {
                                             endBattleSent = true;
-                                            ApiClient.instance.send(new BattleClientPlayerFinishMsg());
+                                            const finishMsg = new BattleClientPlayerFinishMsg();
+                                            finishMsg.setTotalTime(currentTime);
+                                            ApiClient.instance.send(finishMsg);
                                         }
                                     }
-                                });
+                                    timeSinceLastEntityUpdate += engine.getDeltaTime();
+                                    if (timeSinceLastEntityUpdate >= 50) {
+                                        timeSinceLastEntityUpdate -= 50;
+
+                                        const ownCharacter = currentScene!.level.battle.getPlayerCharacterById(data.id);
+                                        if (ownCharacter) {
+                                            const movementComponent = ownCharacter.findComponent(MovementComponent);
+                                            if (movementComponent) {
+                                                const vector3ToPbVector3 = (v: Vector3) => {
+                                                    const pbVector3 = new PbVector3();
+                                                    pbVector3.setX(v.x);
+                                                    pbVector3.setY(v.y);
+                                                    pbVector3.setZ(v.z);
+                                                    return pbVector3;
+                                                }
+                                                const entityUpdate = new BattleClientEntityUpdateMsg();
+                                                const entity = new BattleEntity();
+                                                entity.setId(ownCharacter.id);
+                                                entity.setPosition(vector3ToPbVector3(ownCharacter.position));
+                                                entity.setRotation(vector3ToPbVector3(ownCharacter.rotation));
+                                                entity.setVelocity(vector3ToPbVector3(movementComponent.velocity));
+                                                entityUpdate.setEntity(entity);
+                                                ApiClient.instance.send(entityUpdate);
+                                            }
+                                        }
+                                    }
+                                };
+                                engine.runRenderLoop(renderLoop);
+                                currentScene.onDisposeObservable.add(() => {
+                                    engine.stopRenderLoop(renderLoop);
+                                })
 
                                 ApiClient.instance.send(new BattleClientReadyMsg());
                             });

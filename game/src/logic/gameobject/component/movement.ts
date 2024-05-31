@@ -102,7 +102,12 @@ class MovementComponent extends Component {
     }
 
     public destroy(): void {
-        this._physicsObject.dispose();
+        if (this._physicsAggregate) {
+            this._physicsAggregate.dispose();
+        }
+        if (this._physicsObject) {
+            this._physicsObject.dispose();
+        }
         super.destroy();
     }
 
@@ -144,6 +149,13 @@ class MovementComponent extends Component {
         this._serverPosition = position;
         this._serverRotation = rotation;
         this._owned = false;
+    }
+
+    public get velocity(): Vector3 {
+        if (this._physicsAggregate) {
+            return this._physicsAggregate.body.getLinearVelocity();
+        }
+        return Vector3.Zero();
     }
 }
 

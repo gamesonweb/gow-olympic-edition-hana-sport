@@ -85,9 +85,10 @@ func (b *BattleService) Update() {
 
 func newBattleInstance(id int, mapConfigId uint32, players []*BattlePlayer) *BattleInstance {
 	return &BattleInstance{
-		id:          id,
-		mapConfigId: mapConfigId,
-		players:     players,
+		id:                  id,
+		mapConfigId:         mapConfigId,
+		players:             players,
+		pendingEntityUpdate: make(map[int32]*pb.BattleEntity),
 	}
 }
 
