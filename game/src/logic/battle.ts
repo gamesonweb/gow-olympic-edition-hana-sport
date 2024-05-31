@@ -52,6 +52,10 @@ export class Battle {
         return this._playerCharacter.find((character) => character.player.id == playerId);
     }
 
+    public getPlayerCurrentTurn(playerIndex: number): number {
+        return this._playerCurrentTurn[playerIndex];
+    }
+
     public onCheckpointReached(playerIndex: number, checkpointId: number): void {
         const currentCheckpointIndex = this._playerCurrentTurnCheckpointIndex[playerIndex];
         if (checkpointId === this._level.metadata.checkpoints[currentCheckpointIndex]) {
@@ -83,6 +87,10 @@ export class Battle {
         }
         this._playerCurrentTurnCheckpointIndex[playerIndex] = validatedCheckpointIndex;
         console.log("Player " + playerIndex + " reached checkpoint " + checkpointId + " (validated index " + validatedCheckpointIndex + ")");
+    }
+    public serverSetPlayerCurrentTurn(playerIndex: number, currentTurn: number, currentTurnCheckpointIndex: number): void {
+        this._playerCurrentTurn[playerIndex] = currentTurn;
+        this._playerCurrentTurnCheckpointIndex[playerIndex] = currentTurnCheckpointIndex;
     }
 
     public update(t: number): void {

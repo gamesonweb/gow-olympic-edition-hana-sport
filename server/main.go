@@ -8,6 +8,7 @@ import (
 	"net/http"
 	kartserver "server/src"
 	"strings"
+	"sync"
 )
 
 var upgrader = websocket.Upgrader{
@@ -37,6 +38,8 @@ func main() {
 
 	kartserver.Context = kartserver.NewServiceContext(&c)
 
+	connectedClientsMutex := &sync.Mutex{}
+	connectedClients := make(map[string]*kartserver.Client)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -51,12 +54,25 @@ func main() {
 		}
 		log.Println("New connection: ", idString, nameString)
 
+		connectedClientsMutex.Lock()
+		currentClient, ok := connectedClients[idString]
+		connectedClientsMutex.Unlock()
+		if ok {
+			currentClient.Close()
+		}
+
 		client := kartserver.NewClient(conn)
 		client.SetSessionData(idString, nameString)
 		client.AddHandler(kartserver.Context.MatchmakingService.HandleMessage)
 		client.AddHandler(kartserver.Context.BattleService.HandleMessage)
 		client.AddDisconnectHandler(kartserver.Context.MatchmakingService.OnClientDisconnect)
 		client.AddDisconnectHandler(kartserver.Context.BattleService.OnClientDisconnect)
+		client.AddDisconnectHandler(func(c *kartserver.Client) {
+			connectedClientsMutex.Lock()
+			delete(connectedClients, c.Id())
+			connectedClientsMutex.Unlock()
+		})
+		connectedClients[idString] = client
 
 		client.Run()
 	})

@@ -1,29 +1,17 @@
-import * as jspb from "google-protobuf";
+import {Message} from "google-protobuf";
 import {Create, GetMessageID} from "./pb/factory";
 import {EventList} from "../logic/util/eventList";
 
 export default class ApiClient {
-    public static instance: ApiClient;
+    public static instance: ApiClient = new ApiClient();
 
     private _socket: WebSocket;
     private _connected: boolean = false;
-    private _serverUrl: string;
-    private _handlers: { [key: number]: ((message: jspb.Message) => void)[] } = {};
+    private _handlers: Map<number, (message: Message) => void> = new Map();
     private _sessionInfo: { id: string, name: string };
     private _connecting: boolean = false;
 
-    public onConnectionError: EventList = new EventList();
-
-    static create(serverUrl: string): ApiClient {
-        if (!ApiClient.instance) {
-            ApiClient.instance = new ApiClient(serverUrl);
-        }
-        return ApiClient.instance;
-    }
-
-    constructor(serverUrl: string) {
-        this._serverUrl = serverUrl;
-    }
+    public onConnectionError: () => void;
 
     public setSessionInfo(id: string, name: string): void {
         if (this._connected) {
@@ -33,8 +21,9 @@ export default class ApiClient {
         this._sessionInfo = {id, name};
     }
 
-    public send(message: jspb.Message): void {
+    public send(message: Message): void {
         if (this._connected) {
+            console.log('[ApiClient] Send message: ' + message.constructor.name);
             const id = GetMessageID(message);
             const data = message.serializeBinary();
             const buffer = new Uint8Array(data.length + 1);
@@ -50,7 +39,11 @@ export default class ApiClient {
         return this._connecting;
     }
 
-    public connectAsync(): Promise<void> {
+    public get sessionId(): string {
+        return this._sessionInfo.id;
+    }
+
+    public connectAsync(serverUrl: string): Promise<void> {
         if (this._connected) {
             return Promise.resolve();
         }
@@ -59,7 +52,7 @@ export default class ApiClient {
             if (this._socket) {
                 this._socket.close();
             }
-            this._socket = new WebSocket(`${this._serverUrl}?id=${this._sessionInfo.id}&name=${this._sessionInfo.name}`);
+            this._socket = new WebSocket(`${serverUrl}?id=${this._sessionInfo.id}&name=${this._sessionInfo.name}`);
             this._socket.binaryType = 'arraybuffer';
             this._socket.onopen = () => {
                 this._connected = true;
@@ -69,13 +62,12 @@ export default class ApiClient {
                     const data = buffer.slice(1);
                     const message = Create(id, data);
                     if (message) {
-                        const handler = this._handlers[message.constructor];
+                        console.log('[ApiClient] Received message: ' + message.constructor.name);
+                        const handler = this._handlers.get(id);
                         if (handler) {
-                            for (const h of handler) {
-                                h(message);
-                            }
+                            handler(message);
                         } else {
-                            console.error('[ApiClient] No handler for message: ' + message.constructor.name);
+                            console.error('[ApiClient] No handler for message ID: ' + id);
                         }
                     } else {
                         console.error('[ApiClient] Invalid message ID: ' + id);
@@ -93,7 +85,9 @@ export default class ApiClient {
             this._socket.onclose = () => {
                 if (this._connected) {
                     console.error('[ApiClient] Connection closed');
-                    this.onConnectionError.trigger();
+                    if (this.onConnectionError) {
+                        this.onConnectionError();
+                    }
                 }
                 this._connected = false;
                 this._connecting = false;
@@ -101,11 +95,8 @@ export default class ApiClient {
         });
     }
 
-    public onMessage(message: jspb.Message, handler: (message: jspb.Message) => void): void {
-        if (!this._handlers[message.constructor]) {
-            this._handlers[message.constructor] = [];
-        }
-        this._handlers[message.constructor].push(handler);
+    public addHandler(id: number, handler: (message: Message) => void): void {
+        this._handlers.set(id, handler);
     }
 
     public get connected(): boolean {

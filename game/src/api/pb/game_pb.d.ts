@@ -73,6 +73,12 @@ export class BattleInitDataMsg extends jspb.Message {
   setPlayersList(value: Array<BattleInitDataMsg.Player>): void;
   addPlayers(value?: BattleInitDataMsg.Player, index?: number): BattleInitDataMsg.Player;
 
+  getState(): BattleStateMap[keyof BattleStateMap];
+  setState(value: BattleStateMap[keyof BattleStateMap]): void;
+
+  getTimeSinceStart(): number;
+  setTimeSinceStart(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BattleInitDataMsg.AsObject;
   static toObject(includeInstance: boolean, msg: BattleInitDataMsg): BattleInitDataMsg.AsObject;
@@ -87,6 +93,8 @@ export namespace BattleInitDataMsg {
   export type AsObject = {
     sceneConfigId: number,
     playersList: Array<BattleInitDataMsg.Player.AsObject>,
+    state: BattleStateMap[keyof BattleStateMap],
+    timeSinceStart: number,
   }
 
   export class Player extends jspb.Message {
@@ -373,4 +381,85 @@ export namespace BattleFinishMsg {
     }
   }
 }
+
+export class BattleHeartbeatMsg extends jspb.Message {
+  getTimeSinceStart(): number;
+  setTimeSinceStart(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BattleHeartbeatMsg.AsObject;
+  static toObject(includeInstance: boolean, msg: BattleHeartbeatMsg): BattleHeartbeatMsg.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BattleHeartbeatMsg, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BattleHeartbeatMsg;
+  static deserializeBinaryFromReader(message: BattleHeartbeatMsg, reader: jspb.BinaryReader): BattleHeartbeatMsg;
+}
+
+export namespace BattleHeartbeatMsg {
+  export type AsObject = {
+    timeSinceStart: number,
+  }
+}
+
+export class BattleClientReadyMsg extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BattleClientReadyMsg.AsObject;
+  static toObject(includeInstance: boolean, msg: BattleClientReadyMsg): BattleClientReadyMsg.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BattleClientReadyMsg, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BattleClientReadyMsg;
+  static deserializeBinaryFromReader(message: BattleClientReadyMsg, reader: jspb.BinaryReader): BattleClientReadyMsg;
+}
+
+export namespace BattleClientReadyMsg {
+  export type AsObject = {
+  }
+}
+
+export class BattleStateUpdateMsg extends jspb.Message {
+  getState(): BattleStateMap[keyof BattleStateMap];
+  setState(value: BattleStateMap[keyof BattleStateMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): BattleStateUpdateMsg.AsObject;
+  static toObject(includeInstance: boolean, msg: BattleStateUpdateMsg): BattleStateUpdateMsg.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: BattleStateUpdateMsg, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): BattleStateUpdateMsg;
+  static deserializeBinaryFromReader(message: BattleStateUpdateMsg, reader: jspb.BinaryReader): BattleStateUpdateMsg;
+}
+
+export namespace BattleStateUpdateMsg {
+  export type AsObject = {
+    state: BattleStateMap[keyof BattleStateMap],
+  }
+}
+
+export class LeaveMatchmakingMsg extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LeaveMatchmakingMsg.AsObject;
+  static toObject(includeInstance: boolean, msg: LeaveMatchmakingMsg): LeaveMatchmakingMsg.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LeaveMatchmakingMsg, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LeaveMatchmakingMsg;
+  static deserializeBinaryFromReader(message: LeaveMatchmakingMsg, reader: jspb.BinaryReader): LeaveMatchmakingMsg;
+}
+
+export namespace LeaveMatchmakingMsg {
+  export type AsObject = {
+  }
+}
+
+export interface BattleStateMap {
+  WAITING_FOR_PLAYERS: 0;
+  COUNTDOWN: 1;
+  RACING: 2;
+  FINISHED: 3;
+}
+
+export const BattleState: BattleStateMap;
 

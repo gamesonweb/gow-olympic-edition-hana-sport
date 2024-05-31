@@ -43,6 +43,7 @@ func (c *Client) Name() string {
 }
 
 func (c *Client) Send(message pb.Msg) {
+	log.Printf("sending message: %v", message.ProtoReflect().Descriptor().Name())
 	c.send <- message
 }
 
@@ -90,6 +91,7 @@ func (c *Client) readPump() {
 			log.Printf("error: %v", err)
 			break
 		}
+		log.Printf("received message: %v", msg.ProtoReflect().Descriptor().Name())
 		for _, handler := range c.recvHandler {
 			handler(c, msg)
 		}
@@ -111,18 +113,17 @@ func (c *Client) writePump() {
 				return
 			}
 
-			w, err := c.conn.NextWriter(websocket.BinaryMessage)
-			if err != nil {
-				return
-			}
-
 			messageBytes, _ := proto.Marshal(message)
 			messageBytes = append([]byte{message.Id()}, messageBytes...)
-			if _, err = w.Write(messageBytes); err != nil {
+			if err := c.conn.WriteMessage(websocket.BinaryMessage, messageBytes); err != nil {
 				log.Printf("error: %v", err)
 				return
 			}
 		case <-ticker.C:
+			if c.disconnected {
+				return
+			}
+			log.Printf("sending ping")
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return

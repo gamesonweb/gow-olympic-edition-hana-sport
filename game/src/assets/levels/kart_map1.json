@@ -17,6 +17,8 @@
       6,
       5,
       4,
+      22,
+      23,
       3,
       2
     ],
@@ -26,7 +28,8 @@
       20,
       19,
       21
-    ]
+    ],
+    "turnCount": 1
   },
   "objects": [
     {
@@ -51,7 +54,7 @@
         "z": 1.0
       },
       "isStart": true,
-      "order": 16,
+      "order": 18,
       "isSafeRespawnCandidate": true,
       "canBeSkipped": false
     },
@@ -68,16 +71,16 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 359.273132,
+        "y": 180.0,
         "z": 0.0
       },
       "scale": {
-        "x": 4.55469942,
+        "x": 4.5547,
         "y": 1.6113,
         "z": 1.0
       },
       "isStart": false,
-      "order": 15,
+      "order": 17,
       "isSafeRespawnCandidate": true,
       "canBeSkipped": false
     },
@@ -94,7 +97,7 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 90.0,
+        "y": 270.0,
         "z": 0.0
       },
       "scale": {
@@ -103,7 +106,7 @@
         "z": 1.00000024
       },
       "isStart": false,
-      "order": 14,
+      "order": 16,
       "isSafeRespawnCandidate": true,
       "canBeSkipped": false
     },
@@ -120,13 +123,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 90.219986,
+        "y": 91.16,
         "z": 0.0
       },
       "scale": {
-        "x": 3.36999941,
+        "x": 3.37000036,
         "y": 6.02,
-        "z": 0.9999998
+        "z": 1.00000024
       },
       "isStart": false,
       "order": 13,
@@ -150,7 +153,7 @@
         "z": 0.0
       },
       "scale": {
-        "x": 3.00000048,
+        "x": 3.70000052,
         "y": 1.6113,
         "z": 1.00000012
       },
@@ -176,7 +179,7 @@
         "z": 0.0
       },
       "scale": {
-        "x": 2.64,
+        "x": 3.0,
         "y": 1.6113,
         "z": 1.0
       },
@@ -198,11 +201,11 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 100.740112,
+        "y": 280.73996,
         "z": 0.0
       },
       "scale": {
-        "x": 4.010001,
+        "x": 4.500001,
         "y": 4.33,
         "z": 1.00000024
       },
@@ -224,13 +227,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 100.740112,
+        "y": 289.031,
         "z": 0.0
       },
       "scale": {
-        "x": 6.05000162,
+        "x": 6.25,
         "y": 3.38,
-        "z": 1.00000024
+        "z": 0.99999994
       },
       "isStart": false,
       "order": 9,
@@ -250,13 +253,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 90.49999,
+        "y": 270.246338,
         "z": 0.0
       },
       "scale": {
-        "x": 6.050001,
+        "x": 6.499999,
         "y": 2.19,
-        "z": 1.00000012
+        "z": 0.9999999
       },
       "isStart": false,
       "order": 8,
@@ -276,13 +279,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 11.09,
+        "y": 191.09,
         "z": 0.0
       },
       "scale": {
-        "x": 6.05,
+        "x": 6.050002,
         "y": 5.0,
-        "z": 1.0
+        "z": 1.00000036
       },
       "isStart": false,
       "order": 7,
@@ -302,13 +305,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 11.09,
+        "y": 191.774,
         "z": 0.0
       },
       "scale": {
-        "x": 6.05,
+        "x": 10.1200008,
         "y": 7.0,
-        "z": 1.0
+        "z": 1.00000012
       },
       "isStart": false,
       "order": 6,
@@ -328,13 +331,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 329.93,
+        "y": 149.929977,
         "z": 0.0
       },
       "scale": {
         "x": 6.05000067,
         "y": 3.0,
-        "z": 1.0
+        "z": 1.00000012
       },
       "isStart": false,
       "order": 4,
@@ -354,13 +357,13 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 348.04,
+        "y": 168.04,
         "z": 0.0
       },
       "scale": {
-        "x": 6.05,
+        "x": 6.05000448,
         "y": 3.0,
-        "z": 1.0
+        "z": 1.00000072
       },
       "isStart": false,
       "order": 5,
@@ -410,7 +413,7 @@
         "z": 0.0
       },
       "scale": {
-        "x": 4.0,
+        "x": 4.25000048,
         "y": 5.0,
         "z": 1.0
       },
@@ -559,6 +562,58 @@
         "z": 1.0
       },
       "order": 4
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 22,
+      "config": 0,
+      "name": "Checkpoint_4_2",
+      "position": {
+        "x": -8.26,
+        "y": 2.244,
+        "z": -7.97
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 12.8999987,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 7.33,
+        "y": 6.02,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 14,
+      "isSafeRespawnCandidate": false,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 23,
+      "config": 0,
+      "name": "Checkpoint_4_2 (1)",
+      "position": {
+        "x": -10.39,
+        "y": 2.244,
+        "z": -4.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 291.5,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 7.330001,
+        "y": 6.02,
+        "z": 1.00000012
+      },
+      "isStart": false,
+      "order": 15,
+      "isSafeRespawnCandidate": false,
+      "canBeSkipped": false
     }
   ],
   "models": [

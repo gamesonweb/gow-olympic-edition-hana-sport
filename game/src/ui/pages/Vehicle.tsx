@@ -1,10 +1,11 @@
-﻿import React from 'react';
+﻿import React, {useContext, useRef, useState} from 'react';
 import "./vehicle.css";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
-import {useContext, useRef, useState} from "react";
-import {PageContext} from "../../index";
+import {PageContext, State} from "../../index";
 import {PageType} from "../../PageType";
+import ApiClient from "../../api/client";
+import {JoinMatchmakingMsg} from "../../api/pb/game_pb";
 
 function Vehicle() {
     const page = useContext(PageContext);
@@ -31,8 +32,12 @@ function Vehicle() {
         console.log("Submit clicked");
         let data = page.data;
         data.selection.vehicle = index;
+        page.setState(State.Matchmaking);
         page.setData(data);
         console.log("Vehicle selected: " + index);
+        const joinMatchmakingMsg = new JoinMatchmakingMsg();
+        joinMatchmakingMsg.setCharacterConfigId(page.data.vehicles[index].id);
+        ApiClient.instance.send(joinMatchmakingMsg);
         page.setPage(PageType.Matchmaking);
     };
 

@@ -50,7 +50,7 @@ function Game() {
                 <p>{Utils.convertPosition(data.game.position)}</p>
             </div>
             <p className="g-countdown">
-                {3 - data.game.countdown}
+                {data.game.countdown}
             </p>
         </>
     );

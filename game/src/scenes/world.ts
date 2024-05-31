@@ -23,6 +23,8 @@ import MeshProvider from "../management/meshprovider";
 import AudioComponent from "../management/component/audio";
 import HavokPhysics from "@babylonjs/havok";
 import ConfigTable from "../logic/config/table";
+import {BattleInitDataMsg} from "../api/pb/game_pb";
+import ApiClient from "../api/client";
 
 export default class WorldScene extends Scene {
     private static readonly CAMERA_SPEED: number = 8;
@@ -33,14 +35,17 @@ export default class WorldScene extends Scene {
 
     private _level: Level;
     private _initialized: boolean = false;
+    private _initData: BattleInitDataMsg;
 
     private _sun: DirectionalLight;
     private _optimizer: SceneOptimizer;
 
-    constructor(engine: Engine, config: SceneConfig) {
+    constructor(engine: Engine, config: SceneConfig, initData: BattleInitDataMsg) {
         super(engine);
         this._level = new Level(config, this);
         this._config = config;
+        this._initData = initData;
+
         this.onDispose = () => {
             this._level.destroy();
         };
@@ -128,15 +133,15 @@ export default class WorldScene extends Scene {
     private loadLevel() {
         const sceneObjects = this._config.objects;
         this._level.load(sceneObjects);
-        this._level.battle.setPlayers([
-            {
-                id: "player",
-                name: "Test",
-                characterConfig: ConfigTable.characters[0].id
-            }
-        ]);
+        this._level.battle.setPlayers(this._initData.getPlayersList().map(p => {
+            return {
+                id: p.getId(),
+                name: p.getName(),
+                characterConfig: p.getCharacterConfigId(),
+            };
+        }));
 
-        const player = this._level.battle.getPlayerCharacterById("player")
+        const player = this._level.battle.getPlayerCharacterById(ApiClient.instance.sessionId);
         const playerCamera = this.getComponent(PlayerCamera);
         if (playerCamera !== null) {
             playerCamera.target = player;

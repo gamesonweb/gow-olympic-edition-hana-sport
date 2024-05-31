@@ -1,10 +1,17 @@
 ﻿import "./matchmaking.css";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import React, {useContext} from "react";
-import {MatchmakingContext, PageContext} from "../../index";
+import {MatchmakingContext, PageContext, State} from "../../index";
+import {PageType} from "../../PageType";
 
 function Matchmaking() {
     const {onStart, onCancel, currentPlayers, maxPlayers} = useContext(MatchmakingContext);
+    const page = useContext(PageContext);
+    const cancel = () => {
+        onCancel();
+        page.setState(State.Lobby);
+        page.setPage(PageType.MainMenu);
+    }
     return (
         <>
             <div className='m-background'>
@@ -15,7 +22,7 @@ function Matchmaking() {
 
                     <div className='submit'>
                         <button onClick={onStart}>Start now</button>
-                        <button className='m-back' onClick={onCancel}>
+                        <button className='m-back' onClick={cancel}>
                             Cancel
                         </button>
                     </div>

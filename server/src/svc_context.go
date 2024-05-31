@@ -9,7 +9,7 @@ type ServiceContext struct {
 
 func NewServiceContext(conf *Config) ServiceContext {
 	return ServiceContext{
-		MatchmakingService: NewMatchmakingService(conf.Matchmaking.MaxPlayers, conf.Maps),
+		MatchmakingService: NewMatchmakingService(conf.Matchmaking.MaxPlayers, conf.Maps, conf.Characters),
 		BattleService:      NewBattleService(conf.Battle.TickInterval),
 	}
 }

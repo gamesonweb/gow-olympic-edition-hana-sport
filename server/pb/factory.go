@@ -90,6 +90,38 @@ func (m *BattleFinishMsg) Id() byte {
 func (m *BattleFinishMsg) New() Msg {
     return &BattleFinishMsg{}
 }
+var BattleHeartbeatMsgId = byte(12)
+
+func (m *BattleHeartbeatMsg) Id() byte {
+    return 12
+}
+func (m *BattleHeartbeatMsg) New() Msg {
+    return &BattleHeartbeatMsg{}
+}
+var BattleClientReadyMsgId = byte(13)
+
+func (m *BattleClientReadyMsg) Id() byte {
+    return 13
+}
+func (m *BattleClientReadyMsg) New() Msg {
+    return &BattleClientReadyMsg{}
+}
+var BattleStateUpdateMsgId = byte(14)
+
+func (m *BattleStateUpdateMsg) Id() byte {
+    return 14
+}
+func (m *BattleStateUpdateMsg) New() Msg {
+    return &BattleStateUpdateMsg{}
+}
+var LeaveMatchmakingMsgId = byte(15)
+
+func (m *LeaveMatchmakingMsg) Id() byte {
+    return 15
+}
+func (m *LeaveMatchmakingMsg) New() Msg {
+    return &LeaveMatchmakingMsg{}
+}
 func Create(id byte) Msg {
         switch id {
                            
@@ -125,6 +157,18 @@ func Create(id byte) Msg {
         
     case 11:
         return &BattleFinishMsg{}
+        
+    case 12:
+        return &BattleHeartbeatMsg{}
+        
+    case 13:
+        return &BattleClientReadyMsg{}
+        
+    case 14:
+        return &BattleStateUpdateMsg{}
+        
+    case 15:
+        return &LeaveMatchmakingMsg{}
         
     default:
         return nil

@@ -1,4 +1,4 @@
-import {Vector2} from "@babylonjs/core/Maths/math.vector";
+import {Quaternion, Vector2} from "@babylonjs/core/Maths/math.vector";
 import MovementConfig from "../../config/component/movement";
 import GameObject from "../gameObject";
 import Component, {ComponentType} from "./component";
@@ -12,6 +12,10 @@ class MovementComponent extends Component {
     private _physicsAggregate: PhysicsAggregate;
     private _speedRate: number = 0;
     private _rotationRate: number = 0;
+    private _owned: boolean = true;
+
+    private _serverPosition: Vector3 = Vector3.Zero();
+    private _serverRotation: Vector3 = Vector3.Zero();
 
     public input = new MovementInput();
 
@@ -28,6 +32,18 @@ class MovementComponent extends Component {
     }
 
     public update(t: number): void {
+        if (!this._owned) {
+            // lerp over 200ms as
+            this._physicsObject.position = Vector3.Lerp(this._physicsObject.position, this._serverPosition, t * 5);
+            this._physicsObject.rotationQuaternion = Quaternion.Slerp(this._physicsObject.rotationQuaternion, this._serverRotation.toQuaternion(), t * 5);
+            // reset linear and angular velocity
+            this._physicsAggregate.body.setLinearVelocity(Vector3.Zero());
+            this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
+
+            this.parent.position = this._physicsObject.position;
+            this.parent.rotation = this._physicsObject.rotationQuaternion.toEulerAngles();
+            return;
+        }
         this.parent.position = this._physicsObject.position;
         this.parent.rotation = this._physicsObject.rotationQuaternion.toEulerAngles();
 
@@ -92,13 +108,11 @@ class MovementComponent extends Component {
 
     public resyncPhysics(teleportToGround = true): void {
         if (!this._physicsAggregate) {
-            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: 1, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0, friction: 0.05 });
+            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: this._owned ? 1 : 0, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0, friction: 0.05 });
+            this._physicsAggregate.body.disablePreStep = !this._owned;
         }
         this._physicsObject.position = this.parent.position.clone();
         this._physicsObject.rotationQuaternion = this.parent.rotation.toQuaternion();
-        const physicsAggregate = this._physicsAggregate;
-        physicsAggregate.body.disablePreStep = false;
-        this._physicsAggregate = physicsAggregate;
         this._physicsAggregate.body.setLinearVelocity(Vector3.Zero());
         this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
         this._speedRate = 0;
@@ -124,6 +138,12 @@ class MovementComponent extends Component {
 
     private static clamp(value: number, min: number, max: number): number {
         return Math.max(min, Math.min(max, value));
+    }
+
+    public onServerUpdate(position: Vector3, rotation: Vector3, velocity: Vector3) {
+        this._serverPosition = position;
+        this._serverRotation = rotation;
+        this._owned = false;
     }
 }
 

@@ -62,4 +62,5 @@ export interface KartSpawnPointObject extends SceneObject {
 export interface KartSceneMetadata {
     checkpoints: number[]
     spawnPoints: number[]
+    turnCount: number
 }

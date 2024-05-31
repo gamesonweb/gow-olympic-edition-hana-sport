@@ -17,12 +17,24 @@ import "@babylonjs/inspector";
 
 import {Engine} from "@babylonjs/core/Engines/engine";
 import WorldScene from "./scenes/world";
-import {WebGPUEngine} from '@babylonjs/core';
+import {Vector3, WebGPUEngine} from '@babylonjs/core';
 import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
 import Map from "./ui/pages/Map";
 import ConnectToServer from "./ui/pages/ConnectToServer";
 import Waiting from "./ui/pages/Waiting";
+import ApiClient from "./api/client";
+import {
+    BattleClientPlayerFinishMsg,
+    BattleClientReadyMsg, BattleHeartbeatMsg,
+    BattleInitDataMsg, BattleServerCheckpointUpdateMsg,
+    BattleServerEntityUpdateMsg, BattleState, BattleStateMap, BattleStateUpdateMsg,
+    CompleteMatchmakingMsg,
+    LeaveMatchmakingMsg,
+    MatchmakingStatusMsg
+} from "./api/pb/game_pb";
+import MovementComponent from "./logic/gameobject/component/movement";
+import {GameObjectType} from "./logic/gameobject/gameObject";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -59,12 +71,19 @@ const ChangePage = (pageType: PageType) => {
     }
 }
 
+export enum State {
+    Lobby,
+    Matchmaking,
+    Game
+}
+
 export const PageContext = createContext({
     page: PageType,
     setPage: (name: PageType) => {
     },
     data: {
         vehicles: [{
+            id: 0,
             name: 'name',
             image: 'image',
             speed: 0,
@@ -96,12 +115,16 @@ export const PageContext = createContext({
         id: ""
     },
     setData: (data: any) => {
+    },
+    state: State.Lobby,
+    setState: (state: State) => {
     }
 })
 
 const gameData = {
     vehicles: [
         {
+            id: 1,
             name: 'Boggy',
             image: './assets/vehicles/Vehicle0.png',
             speed: 5,
@@ -157,15 +180,20 @@ export const MatchmakingContext = createContext({
 
 export const MatchmakingProvider = () => {
     const onStart = useCallback(() => {
-        console.log("Start clicked");
+        ApiClient.instance.send(new CompleteMatchmakingMsg())
     }, [])
 
     const onCancel = useCallback(() => {
-        console.log("Cancel clicked");
+        ApiClient.instance.send(new LeaveMatchmakingMsg())
     }, [])
 
     const [currentPlayers, setCurrentPlayers] = useState(0)
     const [maxPlayers, setMaxPlayers] = useState(5)
+
+    ApiClient.instance.addHandler(2, (message: MatchmakingStatusMsg) => {
+        setCurrentPlayers(message.getPlayersInQueue())
+        setMaxPlayers(message.getPlayersRequired())
+    })
 
     return (
         <MatchmakingContext.Provider value={{onCancel, onStart, currentPlayers, maxPlayers}}>
@@ -185,6 +213,7 @@ export const PageProvider = () => {
     }
     const [data, setData] = useState(gameData)
     const [page, setPage] = useState(pageName)
+    const [state, setState] = useState(State.Lobby)
 
     useEffect(() => {
         if (data.selection.username === "") {
@@ -200,8 +229,12 @@ export const PageProvider = () => {
         localStorage.setItem('id', data.id)
     }, [data.selection.username, data.selection.keyboard, data.id])
 
+    ApiClient.instance.onConnectionError = () => {
+        setPage(PageType.ConnectToServer)
+    };
+
     return (
-        <PageContext.Provider value={{page, setPage, data, setData}}>
+        <PageContext.Provider value={{page, setPage, data, setData, state, setState}}>
             <BabylonScene/>
             <React.StrictMode>
                 <div id="game">
@@ -234,7 +267,7 @@ export const RankingProvider = () => {
 }
 
 const BabylonScene = () => {
-        const {data, setData} = useContext(PageContext);
+        const {data, setData, page, setPage} = useContext(PageContext);
         const canvasRef = useRef<HTMLCanvasElement>(null);
         const engineRef = useRef<any>(null);
 
@@ -257,19 +290,139 @@ const BabylonScene = () => {
 
                         engineRef.current = engine;
 
-                        const scene = new WorldScene(engine as any, ConfigTable.scenes[0]);
-                        await scene.init();
-                        setData(
-                            {
-                                ...data,
-                                game: {
-                                    ...data.game,
-                                    currentLap: 50
+                        let currentScene: WorldScene | null = null;
+                        let currentTime = 0;
+                        let currentBattleState = 0;
+
+                        const setBattleState = (state: number) => {
+                            currentBattleState = state;
+                            switch (state) {
+                                case BattleState.WAITING_FOR_PLAYERS:
+                                    setPage(PageType.Waiting);
+                                    break;
+                                case BattleState.COUNTDOWN:
+                                    setPage(PageType.Game);
+                                    data.game.countdown = Math.max(Math.ceil(3 - currentTime), 1);
+                                    data.game.finished = false;
+                                    setData({
+                                        ...data,
+                                    })
+                                    break;
+                                default:
+                                    setPage(PageType.Game);
+                                    data.game.countdown = 0;
+                                    data.game.finished = false;
+                                    setData({
+                                        ...data,
+                                    })
+                                    break;
+                            }
+                        }
+
+                        ApiClient.instance.addHandler(6, (message: BattleServerEntityUpdateMsg) => {
+                            if (currentScene) {
+                                const level = currentScene.level;
+                                const battle = level.battle;
+                                for (const entity of message.getEntitiesList()) {
+                                    const gameObject = level.gameObjectManager.getObject(entity.getId());
+                                    if (!gameObject) {
+                                        console.error('Entity not found', entity.getId());
+                                        return;
+                                    }
+                                    if (gameObject.type !== GameObjectType.Character) {
+                                        console.error('Invalid entity type', gameObject.type);
+                                        return;
+                                    }
+                                    const movementComponent = gameObject.findComponent(MovementComponent);
+                                    if (!movementComponent) {
+                                        console.error('Movement component not found');
+                                        return;
+                                    }
+                                    const pbPosition = entity.getPosition();
+                                    const pbRotation = entity.getRotation();
+                                    const pbVelocity = entity.getVelocity();
+                                    const position = new Vector3(pbPosition.getX(), pbPosition.getY(), pbPosition.getZ());
+                                    const rotation = new Vector3(pbRotation.getX(), pbRotation.getY(), pbRotation.getZ());
+                                    const velocity = new Vector3(pbVelocity.getX(), pbVelocity.getY(), pbVelocity.getZ());
+                                    movementComponent.onServerUpdate(position, rotation, velocity);
+                                    console.log('Entity updated', entity.getId(), position, rotation, velocity);
                                 }
+                            }
+                        });
+                        ApiClient.instance.addHandler(8, (message: BattleServerCheckpointUpdateMsg) => {
+                            if (currentScene) {
+                                const level = currentScene.level;
+                                const battle = level.battle;
+                                const playerIndex = battle.players.findIndex(p => p.id === data.id);
+                                if (playerIndex < 0) {
+                                    console.error('Player not found', data.id);
+                                    return;
+                                }
+                                battle.serverSetPlayerCurrentTurn(playerIndex, message.getTurn(), message.getCheckpointIndex());
+                            }
+                        });
+                        ApiClient.instance.addHandler(10, (message: BattleServerCheckpointUpdateMsg) => {
+                            if (currentScene) {
+                                console.log('Player finished', data.id);
+                            }
+                        });
+                        ApiClient.instance.addHandler(11, () => {
+                            if (currentScene) {
+                                console.log('Battle finished');
+                                setPage(PageType.Ranking);
+                            }
+                        });
+                        ApiClient.instance.addHandler(12, (message: BattleHeartbeatMsg) => {
+                            if (currentScene) {
+                                currentTime = message.getTimeSinceStart();
+                                setBattleState(currentBattleState);
+                            }
+                        });
+                        ApiClient.instance.addHandler(14, (message: BattleStateUpdateMsg) => {
+                            if (currentScene) {
+                                currentTime = 0;
+                                setBattleState(message.getState());
+                            }
+                        });
+
+                        ApiClient.instance.addHandler(4, (message: BattleInitDataMsg) => {
+                            const sceneConfig = ConfigTable.getScene(message.getSceneConfigId());
+                            if (!sceneConfig) {
+                                console.error('Invalid scene config id', message.getSceneConfigId());
+                                return;
+                            }
+                            if (currentScene) {
+                                currentScene.dispose();
+                            }
+                            currentScene = new WorldScene(engine as any, sceneConfig, message);
+                            currentScene.init().then(() => {
+                                const playerIndex = currentScene.level.battle.players.findIndex(p => p.id === data.id);
+                                if (playerIndex < 0) {
+                                    console.error('Player not found', data.id);
+                                    return;
+                                }
+                                let endBattleSent = false;
+                                engine.runRenderLoop(() => {
+                                    currentScene!.update();
+                                    data.game.currentLap = currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) + 1;
+                                    data.game.totalLaps = currentScene!.level.metadata.turnCount;
+                                    setData({
+                                        ...data,
+                                    });
+                                    if (currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) >= currentScene!.level.metadata.turnCount) {
+                                        data.game.finished = true;
+                                        setData({
+                                            ...data,
+                                        });
+                                        if (!endBattleSent) {
+                                            endBattleSent = true;
+                                            ApiClient.instance.send(new BattleClientPlayerFinishMsg());
+                                        }
+                                    }
+                                });
+
+                                ApiClient.instance.send(new BattleClientReadyMsg());
                             });
-                        console.log(data);
-                        engine.runRenderLoop(() => {
-                            scene.update();
                         });
                     } catch (e) {
                         console.error(e);

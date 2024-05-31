@@ -40,6 +40,18 @@ export function GetMessageID(msg: jspb.Message): number {
         case game.BattleFinishMsg.prototype.constructor:
             return 11
         
+        case game.BattleHeartbeatMsg.prototype.constructor:
+            return 12
+        
+        case game.BattleClientReadyMsg.prototype.constructor:
+            return 13
+        
+        case game.BattleStateUpdateMsg.prototype.constructor:
+            return 14
+        
+        case game.LeaveMatchmakingMsg.prototype.constructor:
+            return 15
+        
         default:
             return -1
     }
@@ -80,6 +92,18 @@ export function Create(id: number, data: Uint8Array): jspb.Message | null {
         
         case 11:
             return game.BattleFinishMsg.deserializeBinary(data)
+        
+        case 12:
+            return game.BattleHeartbeatMsg.deserializeBinary(data)
+        
+        case 13:
+            return game.BattleClientReadyMsg.deserializeBinary(data)
+        
+        case 14:
+            return game.BattleStateUpdateMsg.deserializeBinary(data)
+        
+        case 15:
+            return game.LeaveMatchmakingMsg.deserializeBinary(data)
         
         default:
             return null

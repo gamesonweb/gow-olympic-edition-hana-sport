@@ -28,6 +28,8 @@ message BattleInitDataMsg {
   }
   uint32 scene_config_id = 1;
   repeated Player players = 2;
+  BattleState state = 3;
+  double time_since_start = 4;
 }
 
 message Vector3 {
@@ -87,4 +89,29 @@ message BattleFinishMsg {
     float total_time = 3;
   }
   repeated Player players = 1;
+}
+message BattleHeartbeatMsg {
+  option (msg_id) = 12;
+
+  double time_since_start = 1;
+}
+
+message BattleClientReadyMsg {
+  option (msg_id) = 13;
+}
+
+enum BattleState {
+  WAITING_FOR_PLAYERS = 0;
+  COUNTDOWN = 1;
+  RACING = 2;
+  FINISHED = 3;
+}
+message BattleStateUpdateMsg {
+  option (msg_id) = 14;
+
+  BattleState state = 1;
+}
+
+message LeaveMatchmakingMsg {
+  option (msg_id) = 15;
 }

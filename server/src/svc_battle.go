@@ -1,6 +1,7 @@
 package kartserver
 
 import (
+	"log"
 	"server/pb"
 	"sync"
 	"time"
@@ -21,9 +22,7 @@ func NewBattleService(tickInterval time.Duration) *BattleService {
 	go func() {
 		ticker := time.NewTicker(tickInterval)
 		for range ticker.C {
-			b.mu.Lock()
 			b.Update()
-			b.mu.Unlock()
 		}
 	}()
 	return b
@@ -34,6 +33,7 @@ func (b *BattleService) CreateBattle(mapConfigId uint32, players []*BattlePlayer
 	defer b.mu.Unlock()
 	b.instanceIdCounter++
 	instance := newBattleInstance(b.instanceIdCounter, mapConfigId, players)
+	instance.setState(pb.BattleState_WAITING_FOR_PLAYERS)
 	b.instances[instance.id] = instance
 	return instance.id
 }
@@ -74,7 +74,7 @@ func (b *BattleService) Update() {
 	}
 	// remove finished instances
 	for id, instance := range b.instances {
-		if instance.isAllPlayersFinished() {
+		if instance.state == pb.BattleState_FINISHED {
 			delete(b.instances, id)
 			for _, player := range instance.players {
 				delete(b.instancesByClientId, player.Id)
@@ -94,8 +94,10 @@ func newBattleInstance(id int, mapConfigId uint32, players []*BattlePlayer) *Bat
 type BattleInstance struct {
 	id          int
 	mapConfigId uint32
-	clients     []*Client // slot null if not connected
 	mu          sync.Mutex
+
+	state          pb.BattleState
+	stateStartTime time.Time
 
 	players             []*BattlePlayer
 	pendingEntityUpdate map[int32]*pb.BattleEntity
@@ -107,6 +109,8 @@ type BattlePlayer struct {
 	CurrentCheckpoint uint32
 	Finished          bool
 	FinishTotalTime   float32
+	Client            *Client
+	SceneLoaded       bool
 }
 
 func (b *BattleInstance) Id() int {
@@ -115,19 +119,17 @@ func (b *BattleInstance) Id() int {
 
 func (b *BattleInstance) AddClient(client *Client) {
 	b.mu.Lock()
-	for i, player := range b.players {
+	added := false
+	for _, player := range b.players {
 		if player.Id == client.Id() {
-			if b.clients[i] != nil {
-				oldClient := b.clients[i]
-				b.clients[i] = client
-				b.mu.Unlock()
-				oldClient.Close()
-			} else {
-				b.clients[i] = client
-				b.mu.Unlock()
-			}
-			return
+			player.Client = client
+			added = true
+			break
 		}
+	}
+	if !added {
+		log.Println("Player not found in battle instance")
+		return
 	}
 	b.mu.Unlock()
 
@@ -136,16 +138,18 @@ func (b *BattleInstance) AddClient(client *Client) {
 		players = append(players, &player.BattleInitDataMsg_Player)
 	}
 	client.Send(&pb.BattleInitDataMsg{
-		SceneConfigId: b.mapConfigId,
-		Players:       players,
+		SceneConfigId:  b.mapConfigId,
+		Players:        players,
+		State:          b.state,
+		TimeSinceStart: b.getStateDuration().Seconds(),
 	})
 }
 
 func (b *BattleInstance) RemoveClient(client *Client) {
 	b.mu.Lock()
-	for i, c := range b.clients {
-		if c == client {
-			b.clients[i] = nil
+	for i, c := range b.players {
+		if c.Client == client {
+			b.players[i].Client = nil
 			break
 		}
 	}
@@ -174,9 +178,9 @@ func (b *BattleInstance) getPlayerById(id string) *BattlePlayer {
 }
 
 func (b *BattleInstance) broadcast(message pb.Msg) {
-	for _, client := range b.clients {
-		if client != nil {
-			client.Send(message)
+	for _, player := range b.players {
+		if player.Client != nil {
+			player.Client.Send(message)
 		}
 	}
 }
@@ -201,36 +205,96 @@ func (b *BattleInstance) handle(c *Client, msg pb.Msg) {
 			PlayerId:  c.Id(),
 			TotalTime: msg.TotalTime,
 		})
+	case *pb.BattleClientReadyMsg:
+		player := b.getPlayerById(c.Id())
+		player.SceneLoaded = true
+	default:
+		// ignore
 	}
 }
 
 func (b *BattleInstance) update() {
-	entityList := make([]*pb.BattleEntity, 0, len(b.pendingEntityUpdate))
-	for _, entity := range b.pendingEntityUpdate {
-		entityList = append(entityList, entity)
-	}
-	b.broadcast(&pb.BattleServerEntityUpdateMsg{
-		Entities: entityList,
+	b.broadcast(&pb.BattleHeartbeatMsg{
+		TimeSinceStart: b.getStateDuration().Seconds(),
 	})
+	if len(b.pendingEntityUpdate) != 0 {
+		entityList := make([]*pb.BattleEntity, 0, len(b.pendingEntityUpdate))
+		for _, entity := range b.pendingEntityUpdate {
+			entityList = append(entityList, entity)
+		}
+		b.broadcast(&pb.BattleServerEntityUpdateMsg{
+			Entities: entityList,
+		})
+		b.pendingEntityUpdate = make(map[int32]*pb.BattleEntity)
+	}
+	b.updateState()
+}
 
-	if b.isAllPlayersFinished() {
-		playerFinishResult := make([]*pb.BattleFinishMsg_Player, 0, len(b.players))
+func (b *BattleInstance) setState(state pb.BattleState) {
+	b.state = state
+	b.stateStartTime = time.Now()
+	b.broadcast(&pb.BattleStateUpdateMsg{
+		State: state,
+	})
+}
+
+func (b *BattleInstance) getStateDuration() time.Duration {
+	return time.Since(b.stateStartTime)
+}
+
+const (
+	WAITING_FOR_PLAYERS_DURATION = 10 * time.Second
+	COUNTDOWN_DURATION           = 3 * time.Second
+)
+
+func (b *BattleInstance) updateState() {
+	switch b.state {
+	case pb.BattleState_WAITING_FOR_PLAYERS:
+		isWaiting := false
+		hasPlayersWithSceneLoaded := false
 		for _, player := range b.players {
-			playerFinishResult = append(playerFinishResult, &pb.BattleFinishMsg_Player{
-				Id:        player.Id,
-				Name:      player.Name,
-				TotalTime: player.FinishTotalTime,
+			if player.Client != nil && player.SceneLoaded {
+				hasPlayersWithSceneLoaded = true
+			}
+			if player.Client != nil && !player.SceneLoaded {
+				isWaiting = true
+			}
+		}
+		if hasPlayersWithSceneLoaded {
+			if !isWaiting || b.getStateDuration() > WAITING_FOR_PLAYERS_DURATION {
+				b.setState(pb.BattleState_COUNTDOWN)
+			}
+		} else {
+			if b.getStateDuration() > WAITING_FOR_PLAYERS_DURATION*3 {
+				b.setState(pb.BattleState_COUNTDOWN)
+			}
+		}
+	case pb.BattleState_COUNTDOWN:
+		if b.getStateDuration() > COUNTDOWN_DURATION {
+			b.setState(pb.BattleState_RACING)
+		}
+	case pb.BattleState_RACING:
+		if b.isAllPlayersFinished() {
+			b.setState(pb.BattleState_FINISHED)
+
+			playerFinishResult := make([]*pb.BattleFinishMsg_Player, 0, len(b.players))
+			for _, player := range b.players {
+				playerFinishResult = append(playerFinishResult, &pb.BattleFinishMsg_Player{
+					Id:        player.Id,
+					Name:      player.Name,
+					TotalTime: player.FinishTotalTime,
+				})
+			}
+			b.broadcast(&pb.BattleFinishMsg{
+				Players: playerFinishResult,
 			})
 		}
-		b.broadcast(&pb.BattleFinishMsg{
-			Players: playerFinishResult,
-		})
 	}
 }
 
 func (b *BattleInstance) isAllPlayersFinished() bool {
 	for _, player := range b.players {
-		if !player.Finished {
+		if !player.Finished && player.Client != nil && player.SceneLoaded {
 			return false
 		}
 	}

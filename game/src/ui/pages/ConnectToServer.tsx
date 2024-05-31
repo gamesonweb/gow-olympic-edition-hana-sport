@@ -9,9 +9,6 @@ import ApiClient from "../../api/client";
 function ConnectToServer() {
     const page = useContext(PageContext);
     useEffect(() => {
-        if (!ApiClient.instance) {
-            ApiClient.create("ws://localhost:8080/ws");
-        }
         if (ApiClient.instance.isConnecting()) {
             return;
         }
@@ -21,7 +18,7 @@ function ConnectToServer() {
         }
         ApiClient.instance.setSessionInfo(page.data.id, page.data.selection.username);
         function connect() {
-            ApiClient.instance.connectAsync().then(() => {
+            ApiClient.instance.connectAsync('ws://localhost:8080/ws').then(() => {
                 page.setPage(PageType.MainMenu);
             }).catch((error) => {
                 console.error(error);
