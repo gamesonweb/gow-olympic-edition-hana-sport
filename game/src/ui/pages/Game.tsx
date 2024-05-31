@@ -14,13 +14,12 @@ function Game() {
             endRank.current.style.display = state ? "block" : "none";
         }
     };
+
     useEffect(() => {
+        console.log(data.game.finished);
         showEndRank(data.game.finished);
     }, [data.game.finished]);
-    useEffect(() => {
-        showEndRank(false);
-    }, []);
-    
+
     useEffect(() => {
         if (data.game.countdown <= 0) {
             countdownRef.current.style.display = "none";

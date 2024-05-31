@@ -53,6 +53,7 @@ func (c *Client) Close() {
 	if c.disconnected {
 		return
 	}
+	close(c.send)
 	for _, handler := range c.disconnectHandler {
 		handler(c)
 	}

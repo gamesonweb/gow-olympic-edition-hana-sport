@@ -56,10 +56,26 @@ class MovementComponent extends Component {
         // console.log(isGrounded + ": " + this.parent.position + " " + this._config.collider.y + " " + downRotation);
 
         if (!isGrounded) {
-            const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
-            angularVelocity.x = Math.sign(angularVelocity.x) * Math.min(Math.abs(angularVelocity.x), 2);
-            angularVelocity.z = Math.sign(angularVelocity.z) * Math.min(Math.abs(angularVelocity.z), 2);
-            this._physicsAggregate.body.setAngularVelocity(angularVelocity);
+            const velocity = this._physicsAggregate.body.getLinearVelocity();
+            if (Math.abs(velocity.y) < 0.1 && velocity.length() < 1) {
+                // move down
+                const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
+                const xDeg = this.parent.rotation.x * 180 / Math.PI;
+                if (Math.abs(xDeg) > 60) {
+                    angularVelocity.x = 3 * Math.sign(xDeg);
+                }
+                const zDeg = this.parent.rotation.z * 180 / Math.PI;
+                if (Math.abs(zDeg) > 60) {
+                    angularVelocity.z = 3 * Math.sign(zDeg);
+                }
+                console.log("X: " + xDeg + " Z: " + zDeg);
+                this._physicsAggregate.body.setAngularVelocity(angularVelocity);
+            } else {
+                const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
+                angularVelocity.x = Math.sign(angularVelocity.x) * Math.min(Math.abs(angularVelocity.x), 2);
+                angularVelocity.z = Math.sign(angularVelocity.z) * Math.min(Math.abs(angularVelocity.z), 2);
+                this._physicsAggregate.body.setAngularVelocity(angularVelocity);
+            }
         } else {
             const currentVelocity = this._physicsAggregate.body.getLinearVelocity();
             const direction = this.input.axis.clone();
@@ -161,6 +177,7 @@ class MovementComponent extends Component {
 
 class MovementInput {
     public axis: Vector2 = Vector2.Zero();
+    public respawn: boolean = false;
 }
 
 export default MovementComponent;

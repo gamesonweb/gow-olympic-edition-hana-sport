@@ -8,6 +8,7 @@ import {PageType} from "../../PageType";
 function Ranking() {
     const {rankings} = useContext(RankingContext);
     const {setPage} = useContext(PageContext);
+
     return (
         <>
             <div className='title'>

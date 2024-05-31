@@ -56,7 +56,7 @@ const ChangePage = (pageType: PageType) => {
         case PageType.Game:
             return <Game/>
         case PageType.Ranking:
-            return <RankingProvider/>
+            return <Ranking/>
         case PageType.HowTo:
             return <HowTo/>
         case PageType.Credits:
@@ -93,11 +93,6 @@ export const PageContext = createContext({
             acceleration: 0,
             brake: 0,
         }],
-        matchmaking: {
-            inMatchmaking: false,
-            currentPlayers: 0,
-            maxPlayers: 0,
-        },
         selection: {
             vehicle: 0,
             username: '',
@@ -136,11 +131,6 @@ const gameData = {
             brake: 2,
         }
     ],
-    matchmaking: {
-        inMatchmaking: false,
-        currentPlayers: 0,
-        maxPlayers: 5,
-    },
     game: {
         position: 1,
         currentLap: 1,
@@ -240,24 +230,20 @@ export const PageProvider = () => {
 
     return (
         <PageContext.Provider value={{page, setPage, data, setData, state, setState}}>
-            <BabylonScene/>
-            <React.StrictMode>
-                <div id="game">
-                    {ChangePage(page)}
-                </div>
-            </React.StrictMode>
+            <RankingProvider>
+                <BabylonScene/>
+                <React.StrictMode>
+                    <div id="game">
+                        {ChangePage(page)}
+                    </div>
+                </React.StrictMode>
+            </RankingProvider>
         </PageContext.Provider>
     )
 }
 
 export const RankingContext = createContext({
-    rankings: [{
-        rank: 0,
-        id: 'id',
-        name: 'name',
-        time: '0:00.000',
-        timeRaw: 0
-    }],
+    rankings: [],
     setRankings: (rankings: any) => {
     }
 })
@@ -268,7 +254,7 @@ const timeToString = (time: number) => {
     return `${mins}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`
 }
 
-export const RankingProvider = () => {
+export const RankingProvider = ({children}: any) => {
     const [rankings, setRankings] = useState([{
         rank: 0,
         id: 'id',
@@ -276,9 +262,10 @@ export const RankingProvider = () => {
         time: '0:00.000',
         timeRaw: 0
     }])
+
     return (
         <RankingContext.Provider value={{rankings, setRankings}}>
-            <Ranking/>
+            {children}
         </RankingContext.Provider>
     )
 }
@@ -330,8 +317,16 @@ const BabylonScene = () => {
                                 case BattleState.RACING:
                                     setPage(PageType.Game);
                                     data.game.countdown = 0;
-                                    data.game.finished = false;
-                                    data.game.time = timeToString(currentTime);
+                                    data.game.time = timeToString(finishTime || currentTime);
+                                    setData({
+                                        ...data,
+                                    })
+                                    break;
+                                case BattleState.FINISHED:
+                                    setPage(PageType.Game);
+                                    data.game.countdown = 0;
+                                    data.game.finished = true;
+                                    data.game.time = timeToString(finishTime || currentTime);
                                     setData({
                                         ...data,
                                     })
@@ -412,8 +407,11 @@ const BabylonScene = () => {
                                             timeRaw: message.getTotalTime()
                                         }
                                         // rebuild rankings
-                                        rankings.sort((a, b) => a.timeRaw - b.timeRaw);
-                                        setRankings([...rankings]);
+                                        rankings.sort((a, b) => b.timeRaw - a.timeRaw);
+                                        rankings.forEach((ranking, index) => {
+                                            ranking.rank = index + 1;
+                                        });
+                                        setRankings(rankings);
                                     } else {
                                         console.error('Ranking not found', message.getPlayerId(), rankings);
                                     }
@@ -474,7 +472,6 @@ const BabylonScene = () => {
                                 }
                             });
                             rankings.splice(0, rankings.length, ...newRankings);
-                            setRankings(rankings);
 
                             currentScene = new WorldScene(engine as any, sceneConfig, message);
                             currentScene.init().then(() => {
@@ -493,7 +490,7 @@ const BabylonScene = () => {
                                     setData({
                                         ...data,
                                     });
-                                    if (currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) >= currentScene!.level.metadata.turnCount || true) {
+                                    if (currentScene!.level.battle.getPlayerCurrentTurn(playerIndex) >= currentScene!.level.metadata.turnCount && currentBattleState === BattleState.RACING) {
                                         data.game.finished = true;
                                         setData({
                                             ...data,

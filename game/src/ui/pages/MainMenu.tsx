@@ -5,6 +5,7 @@ import {PageContext} from "../../index";
 import {useContext} from "react";
 import {PageType} from "../../PageType";
 import ApiClient from "../../api/client";
+import PlayerInput from "../../management/component/playerInput";
 
 function MainMenu() {
     const page = useContext(PageContext);
@@ -12,6 +13,22 @@ function MainMenu() {
         page.setPage(PageType.ConnectToServer);
         return <></>;
     }
+
+    switch (page.data.selection.keyboard) {
+        case "AZERTY":
+            PlayerInput.KEY_FORWARD = "z";
+            PlayerInput.KEY_LEFT = "q";
+            PlayerInput.KEY_BACKWARD = "s";
+            PlayerInput.KEY_RIGHT = "d";
+            break;
+        case "QWERTY":
+            PlayerInput.KEY_FORWARD = "w";
+            PlayerInput.KEY_LEFT = "a";
+            PlayerInput.KEY_BACKWARD = "s";
+            PlayerInput.KEY_RIGHT = "d";
+            break;
+    }
+
     return (
         <>
             <div className='mm-background'>
