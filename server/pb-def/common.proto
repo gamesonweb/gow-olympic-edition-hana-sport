@@ -1,0 +1,8 @@
+syntax = "proto2";
+import "google/protobuf/descriptor.proto";
+package kart;
+option go_package = "/pb";
+
+extend google.protobuf.MessageOptions {
+  optional uint32 msg_id = 50010;
+}

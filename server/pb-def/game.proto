@@ -1,0 +1,90 @@
+syntax = "proto3";
+package kart;
+import "common.proto";
+option go_package = "/pb";
+
+message JoinMatchmakingMsg {
+  option (msg_id) = 1;
+
+  uint32 character_config_id = 2;
+}
+message MatchmakingStatusMsg {
+  option (msg_id) = 2;
+
+  uint32 players_in_queue = 1;
+  uint32 players_required = 2;
+}
+message CompleteMatchmakingMsg {
+  option (msg_id) = 3;
+}
+
+message BattleInitDataMsg {
+  option (msg_id) = 4;
+
+  message Player {
+    string id = 1;
+    string name = 2;
+    uint32 character_config_id = 3;
+  }
+  uint32 scene_config_id = 1;
+  repeated Player players = 2;
+}
+
+message Vector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+message BattleEntity {
+  int32 id = 1;
+  Vector3 position = 2;
+  Vector3 rotation = 3;
+  Vector3 velocity = 4;
+}
+
+message BattleClientEntityUpdateMsg {
+  option (msg_id) = 5;
+
+  BattleEntity entity = 1;
+}
+message BattleServerEntityUpdateMsg {
+  option (msg_id) = 6;
+
+  repeated BattleEntity entities = 1;
+}
+message BattleClientCheckpointUpdateMsg {
+  option (msg_id) = 7;
+
+  uint32 checkpoint_index = 1;
+  uint32 turn = 2;
+}
+message BattleServerCheckpointUpdateMsg {
+  option (msg_id) = 8;
+
+  string player_id = 1;
+  uint32 checkpoint_index = 2;
+  uint32 turn = 3;
+}
+message BattleClientPlayerFinishMsg {
+  option (msg_id) = 9;
+
+  float total_time = 1;
+}
+message BattleServerPlayerFinishMsg {
+  option (msg_id) = 10;
+
+  string player_id = 1;
+  float total_time = 2;
+}
+
+message BattleFinishMsg {
+  option (msg_id) = 11;
+
+  message Player {
+    string id = 1;
+    string name = 2;
+    float total_time = 3;
+  }
+  repeated Player players = 1;
+}
