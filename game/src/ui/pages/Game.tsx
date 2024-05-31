@@ -5,7 +5,7 @@ import {PageContext} from "../../index";
 
 function Game() {
     const [time, setTime] = useState("");
-    const page = useContext(PageContext);
+    const {data} = useContext(PageContext);
     const startTime = Date.now();
 
     const endRank = useRef<HTMLDivElement>(null);
@@ -16,8 +16,8 @@ function Game() {
         }
     };
     useEffect(() => {
-        showEndRank(page.data.game.finished);
-    }, [page.data.game.finished]);
+        showEndRank(data.game.finished);
+    }, [data.game.finished]);
     useEffect(() => {
         showEndRank(false);
         const interval = setInterval(() => {
@@ -39,15 +39,15 @@ function Game() {
                 <p>{time}</p>
             </div>
             <div className='g-rank' ref={endRank}>
-                <p>{Utils.convertPosition(page.data.game.position)} Race</p>
+                <p>{Utils.convertPosition(data.game.position)} Race</p>
             </div>
             <div className='g-lap'>
                 <p>
-                    {page.data.game.currentLap}/{page.data.game.totalLaps}
+                    {data.game.currentLap}/{data.game.totalLaps}
                 </p>
             </div>
             <div className='g-position'>
-                <p>{Utils.convertPosition(page.data.game.position)}</p>
+                <p>{Utils.convertPosition(data.game.position)}</p>
             </div>
         </>
     );

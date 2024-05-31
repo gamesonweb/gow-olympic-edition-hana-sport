@@ -185,9 +185,12 @@ export const PageProvider = () => {
 
     return (
         <PageContext.Provider value={{page, setPage, data, setData}}>
-            <div id="game">
-                {ChangePage(page)}
-            </div>
+            <BabylonScene/>
+            <React.StrictMode>
+                <div id="game">
+                    {ChangePage(page)}
+                </div>
+            </React.StrictMode>
         </PageContext.Provider>
     )
 }
@@ -218,29 +221,20 @@ const BabylonScene = () => {
 
                         const scene = new WorldScene(engine as any, ConfigTable.scenes[0]);
                         await scene.init();
-
+                        setData(
+                            {
+                                ...data,
+                                game: {
+                                    ...data.game,
+                                    currentLap: 50
+                                }
+                            });
+                        console.log(data);
                         engine.runRenderLoop(() => {
-                            const currentLap = scene.deltaTime;
-
-                            // Update state only if the lap number changes
-                            // setData(prevData => {
-                            //     if (prevData.game.currentLap !== currentLap) {
-                            //         return {
-                            //             ...prevData,
-                            //             game: {
-                            //                 ...prevData.game,
-                            //                 currentLap: currentLap
-                            //             }
-                            //         };
-                            //     }
-                            //     return prevData;
-                            // });
-
                             scene.update();
                         });
                     } catch (e) {
                         console.error(e);
-
                     }
                 };
 
@@ -263,10 +257,7 @@ const BabylonScene = () => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <>
-        <BabylonScene/>
-        <React.StrictMode>
-            <PageProvider/>
-        </React.StrictMode>
+        <PageProvider/>
     </>
     ,
 )
