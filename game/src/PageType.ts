@@ -11,5 +11,6 @@ export enum PageType {
     HowTo,
     Credits,
     Company,
-    Map
+    Map,
+    Waiting,
 }

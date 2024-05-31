@@ -22,6 +22,7 @@ import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
 import Map from "./ui/pages/Map";
 import ConnectToServer from "./ui/pages/ConnectToServer";
+import Waiting from "./ui/pages/Waiting";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -51,6 +52,8 @@ const ChangePage = (pageType: PageType) => {
             return <Map/>
         case PageType.ConnectToServer:
             return <ConnectToServer/>
+        case PageType.Waiting:
+            return <Waiting/>
         default:
             return <MainMenu/>
     }
@@ -83,6 +86,7 @@ export const PageContext = createContext({
             currentLap: 0,
             totalLaps: 0,
             finished: true,
+            countdown: 0
         },
         maps: [{
             name: 'name',
@@ -114,7 +118,8 @@ const gameData = {
         position: 1,
         currentLap: 1,
         totalLaps: 3,
-        finished: false
+        finished: false,
+        countdown: 3
     },
     selection: {
         vehicle: 0,
