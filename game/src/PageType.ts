@@ -9,5 +9,6 @@ export enum PageType {
     Ranking,
     HowTo,
     Credits,
-    Company
+    Company,
+    Map
 }

@@ -1,0 +1,110 @@
+﻿.ma-choose {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  right: 0;
+  left: 0;
+}
+
+.ma-content {
+  display: flex;
+  align-items: center;
+  height: 300px;
+  flex-direction: row;
+}
+
+.ma-content > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 400px;
+  margin-top: 30px;
+}
+
+.ma-content-preview {
+  background-color: #da5753;
+  border: 5px solid black;
+}
+
+.ma-content-preview > img {
+  height: calc(100% - 10px);
+  width: calc(100% - 10px);
+}
+
+.ma-content-info {
+  background-image: url("~/public/assets/vehicule/BackroundRepeat.png");
+  border: 5px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ma-content-stat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin: 10px;
+  padding: 0 20px;
+  background-color: #da5753;
+  color: white;
+  font-size: 20px;
+}
+
+.ma-content-info > h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #da5753;
+  color: white;
+  font-size: 20px;
+}
+
+.ma-content-control {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.ma-content-control > button {
+  width: 100%;
+  height: 100%;
+  background-color: #da5753;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.ma-content-control > button:hover {
+  background-color: #f7a9a7;
+}
+
+.ma-back {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  background-image: url("~/public/assets/common/GreyButtonBackground.png") !important;
+}
+
+.ma-back:hover {
+  background-image: url("~/public/assets/common/GreyButtonBackgroundHover.png") !important;
+}
+
+.ma-background {
+  background-image: url("~/public/assets/vehicule/Background.png");
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+}

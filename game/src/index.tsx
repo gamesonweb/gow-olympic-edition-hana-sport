@@ -1,4 +1,4 @@
-import React, {createContext, StrictMode, useContext, useEffect, useRef, useState} from 'react';
+import React, {createContext, useContext, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import MainMenu from "./ui/pages/MainMenu";
@@ -20,6 +20,7 @@ import WorldScene from "./scenes/world";
 import {WebGPUEngine} from '@babylonjs/core';
 import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
+import Map from "./ui/pages/Map";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -45,6 +46,8 @@ const ChangePage = (pageType: PageType) => {
             return <Credits/>
         case PageType.Company:
             return <Company/>
+        case PageType.Map:
+            return <Map/>
         default:
             return <MainMenu/>
     }
@@ -57,6 +60,7 @@ export const PageContext = createContext({
     data: {
         vehicles: [{
             name: 'name',
+            image: 'image',
             speed: 0,
             acceleration: 0,
             handling: 0,
@@ -74,13 +78,18 @@ export const PageContext = createContext({
             vehicle: 0,
             username: '',
             keyboard: '',
-            map: '',
+            map: 0,
         }, game: {
             position: 0,
             currentLap: 0,
             totalLaps: 0,
             finished: true,
-        }
+        },
+        maps: [{
+            name: 'name',
+            image: 'image',
+            description: 'description',
+        }]
     },
     setData: (data: any) => {
     }
@@ -90,18 +99,21 @@ const gameData = {
     vehicles: [
         {
             name: 'Vehicle 1',
+            image: 'image',
             speed: 100,
             acceleration: 50,
             handling: 20,
         },
         {
             name: 'Vehicle 2',
+            image: 'image',
             speed: 50,
             acceleration: 100,
             handling: 50,
         },
         {
             name: 'Vehicle 3',
+            image: 'image',
             speed: 20,
             acceleration: 20,
             handling: 100,
@@ -145,11 +157,28 @@ const gameData = {
         finished: false
     },
     selection: {
-        vehicle: -1,
+        vehicle: 0,
         username: "",
         keyboard: "",
-        map: "",
+        map: 0,
     },
+    maps: [
+        {
+            name: 'Map 1',
+            image: 'image',
+            description: 'description',
+        },
+        {
+            name: 'Map 2',
+            image: 'image',
+            description: 'description',
+        },
+        {
+            name: 'Map 3',
+            image: 'image',
+            description: 'description',
+        },
+    ]
 }
 
 const loadSelection = () => {
@@ -165,7 +194,7 @@ export const PageProvider = () => {
     gameData.selection = loadSelection()
     let pageName: any;
     if (gameData.selection.username !== "") {
-        pageName = PageType.Game
+        pageName = PageType.MainMenu
     } else {
         pageName = PageType.EnterUsername
     }
