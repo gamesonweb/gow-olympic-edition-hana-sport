@@ -1,4 +1,4 @@
-import {Camera, Vector3} from "@babylonjs/core";
+import {Camera, Ray, Vector3} from "@babylonjs/core";
 import GameObject from "../../logic/gameobject/gameObject";
 import WorldScene from "../../scenes/world";
 import ISceneComponent from "./interface";
@@ -35,18 +35,32 @@ export default class PlayerCamera implements ISceneComponent {
         }
 
         if (this._target) {
-            const targetRotation = this._target.rotation.toQuaternion();
             const targetPosition = this._target.position;
 
-            const offsetWithRotation = this._offset.rotateByQuaternionAroundPointToRef(targetRotation, Vector3.Zero(), new Vector3());
-            offsetWithRotation.y = this._offset.y;
+            const targetCameraPosition = this._calculateCameraPosition(this._offset);
+            // raycast to check if camera is inside a wall
+            const ray = targetCameraPosition.subtract(targetPosition);
+            const raycast = this._scene.pickWithRay(new Ray(targetPosition, ray.normalizeToNew(), ray.length()));
+            if (raycast.hit) {
+                const distToTarget = raycast.pickedPoint.subtract(targetPosition).length();
+                if (distToTarget < 5) {
+                    targetCameraPosition.copyFrom(this._calculateCameraPosition(new Vector3(0, 7, -6)))
+                }
+            }
 
-            const finalPosition = targetPosition.add(offsetWithRotation);
-            this._camera.position = Vector3.Lerp(this._camera.position, finalPosition, this._speed * t);
+            this._camera.position = Vector3.Lerp(this._camera.position, targetCameraPosition, this._speed * t);
             this._camera.setTarget(targetPosition.clone().add(this._targetOffset));
         } else {
             console.warn('No target set for player camera');
         }
+    }
+
+    private _calculateCameraPosition(offset: Vector3): Vector3 {
+        const targetRotation = this._target.rotation.toQuaternion();
+        const targetPosition = this._target.position;
+        const offsetWithRotation = offset.rotateByQuaternionAroundPointToRef(targetRotation, Vector3.Zero(), new Vector3());
+        offsetWithRotation.y = offset.y;
+        return  targetPosition.add(offsetWithRotation);
     }
 
     public get tracking(): boolean {

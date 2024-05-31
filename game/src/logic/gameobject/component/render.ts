@@ -28,6 +28,12 @@ export default class RenderComponent extends Component {
                 });
             });
 
+            // disable pickability
+            this._mesh.isPickable = false;
+            for (const mesh of result.meshes) {
+                mesh.isPickable = false;
+            }
+
             // apply scale
             this._mesh.scaling = new Vector3(config.scale, config.scale, config.scale).multiply(this.parent.scale);
             this._offset = new Vector3(config.offset.x, config.offset.y, config.offset.z);
