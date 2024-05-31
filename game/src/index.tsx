@@ -63,7 +63,7 @@ export const PageContext = createContext({
             image: 'image',
             speed: 0,
             acceleration: 0,
-            handling: 0,
+            brake: 0,
         }],
         rankings: [{
             rank: 0,
@@ -98,26 +98,12 @@ export const PageContext = createContext({
 const gameData = {
     vehicles: [
         {
-            name: 'Vehicle 1',
-            image: 'image',
-            speed: 100,
-            acceleration: 50,
-            handling: 20,
-        },
-        {
-            name: 'Vehicle 2',
-            image: 'image',
-            speed: 50,
-            acceleration: 100,
-            handling: 50,
-        },
-        {
-            name: 'Vehicle 3',
-            image: 'image',
-            speed: 20,
-            acceleration: 20,
-            handling: 100,
-        },
+            name: 'Boggy',
+            image: './assets/vehicles/Vehicle0.png',
+            speed: 5,
+            acceleration: 2.5,
+            brake: 2,
+        }
     ],
     rankings: [
         {
@@ -164,20 +150,10 @@ const gameData = {
     },
     maps: [
         {
-            name: 'Map 1',
-            image: 'image',
-            description: 'description',
-        },
-        {
-            name: 'Map 2',
-            image: 'image',
-            description: 'description',
-        },
-        {
-            name: 'Map 3',
-            image: 'image',
-            description: 'description',
-        },
+            name: 'Messy room',
+            image: './assets/maps/Map0.png',
+            description: 'In the "Messy Room" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
+        }
     ]
 }
 

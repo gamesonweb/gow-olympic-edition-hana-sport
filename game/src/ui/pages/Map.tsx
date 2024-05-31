@@ -60,9 +60,7 @@ function Map() {
                         </div>
                         <div className='v-content-info'>
                             <h2>{stats.name}</h2>
-                            <div className='v-content-stat'>
-                                <p>{stats.description}</p>
-                            </div>
+                            <p>{stats.description}</p>
                             <div className='v-content-control'>
                                 <button ref={previousRef} onClick={previous}>
                                     Previous

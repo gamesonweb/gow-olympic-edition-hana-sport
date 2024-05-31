@@ -68,7 +68,7 @@ function Vehicle() {
                                 <p>Acceleration: {stats.acceleration}</p>
                             </div>
                             <div className='v-content-stat'>
-                                <p>Handling: {stats.handling}</p>
+                                <p>Brake: {stats.brake}</p>
                             </div>
                             <div className='v-content-control'>
                                 <button ref={previousRef} onClick={previous}>
