@@ -21,3 +21,15 @@
     width: 100vw;
     background-size: cover;
 }
+
+.m-back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-image: url("~/public/assets/common/GreyButtonBackground.png") !important;
+}
+
+.m-back:hover {
+    background-image: url("~/public/assets/common/GreyButtonBackgroundHover.png") !important;
+}
