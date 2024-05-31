@@ -20,6 +20,7 @@ Pour installer le serveur:
 
 ```bash
 cd server
+go get ./...
 ```
 
 ## Lancement
@@ -35,6 +36,10 @@ Pour lancer le serveur:
 
 ```bash
 cd server
+go build .
+./server # Linux / MacOS
+or
+server.exe # Windows
 ```
 
 ---
@@ -59,8 +64,6 @@ Le jeu prend en charge les claviers **AZERTY** et **QWERTY**.
 
 - Lorsque vous lancez le jeu pour la première fois, vous devrez entrer un pseudo et choisir le type de clavier que vous utilisez.
 
-- **Mode solo** : Vous pouvez choisir un circuit et un véhicule, puis vous devrez terminer la course en un temps record.
-
 - **Mode en ligne** : Vous entrerez alors dans une salle d'attente. Lorsque qu'il y au moins 2 joueurs, la course commencera. Vous pourrez alors vous affronter en ligne.
 
 - **Classement** : Un classement des meilleurs temps sera disponible pour chaque circuit a la fin de chaque course.
@@ -73,6 +76,7 @@ Azerty / Qwerty :
 - **S** : Freiner
 - **Q** / **A** : Gauche
 - **D** : Droite
+- **M**: Réapparaitre (si vous êtes bloqué)
 
 ## Autres
 
@@ -83,11 +87,12 @@ https://www.figma.com/design/g7iOd4V6zGwgySe5UnGnWP/GOW2024?node-id=0-1&t=4IBVqL
 
 ## Technologies utilisées
 
-Nous avons opté pour BabylonJS 7.9.0 et React pour notre projet, combinant ainsi la puissance de la bibliothèque de rendu 3D de BabylonJS avec la flexibilité et la facilité de développement de l'interface utilisateur offerte par React. Nous avons une API en Go et un serveur de jeu en websocket. Nous avons quelques script C# pour l'exportation de certains éléments de jeu depuis Unity.
+Nous avons opté pour BabylonJS 7.9.0 et React pour notre projet, combinant ainsi la puissance de la bibliothèque de rendu 3D de BabylonJS avec la flexibilité et la facilité de développement de l'interface utilisateur offerte par React. Nous avons un serveur en Go et nous utilisons websocket pour le transport. Nous avons quelques script C# pour l'exportation de certains éléments de jeu depuis Unity.
 
 ## Phase de développement
 
-Nous avons entamé le projet BabylonJS le 30 mai. En tant que fondateurs d'un studio de jeux vidéo (Hana Games), nous consacrons tout notre temps libre au développement de Gang Stars, un jeu mobile. Pour cette dernière édition, après deux participations, nous avons décidé de créer un jeu dans les délais impartis.
+Nous avons entamé le projet BabylonJS le 30 mai. En tant que fondateurs d'un studio de jeux vidéo (Hana Games), nous consacrons tout notre temps libre au développement de Gang Stars, notre jeu mobile. Pour cette dernière édition, après deux participations, nous avons décidé de créer un jeu dans les délais impartis.
 Nous utilisons Unity comme un intermédiaire dans notre processus de développement. Nous concevons nos mondes et éléments de jeu dans Unity, puis nous les exportons vers BabylonJS à l'aide de l'outil "UnityGLTF" de KhronosGroup. Les checkpoints, les modèles et les points de spawn sont exportés depuis Unity via un script C# [kart_map1.json](https://github.com/gamesonweb/gow-olympic-edition-hana-sport/blob/6691c28f529e84482cdb3b3241d158cf63bac972/game/src/assets/levels/kart_map1.json). Cette approche nous permet de bénéficier des avantages de Unity en matière de conception et de flux de travail, tout en exploitant les fonctionnalités et les performances de BabylonJS pour le rendu 3D dans notre jeu. Notre structure de code suit également celle d'Unity, avec l'utilisation de composants dans des gameobjects. Cela facilite la transition et la collaboration entre les membres de l'équipe, car nous utilisons une méthode familière et efficace pour organiser notre code et nos ressources.
 
-## Capture d'écran
+[LinkedIn](https://www.linkedin.com/company/hanagames/)
+[X](https://x.com/HanaGamesStudio)
