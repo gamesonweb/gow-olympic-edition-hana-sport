@@ -9,6 +9,7 @@ function Game() {
     const startTime = Date.now();
 
     const endRank = useRef<HTMLDivElement>(null);
+    const countdownRef = useRef<HTMLParagraphElement>(null);
 
     const showEndRank = (state: boolean) => {
         if (endRank.current) {
@@ -32,6 +33,15 @@ function Game() {
         }, 1000);
         return () => clearInterval(interval);
     }, []);
+    
+    useEffect(() => {
+        if (3 - data.game.countdown <= 0) {
+            countdownRef.current.style.display = "none";
+        }
+        else {
+            countdownRef.current.style.display = "block";
+        }
+    }, [data.game.countdown]);
 
     return (
         <>
@@ -49,7 +59,7 @@ function Game() {
             <div className='g-position'>
                 <p>{Utils.convertPosition(data.game.position)}</p>
             </div>
-            <p className="g-countdown">
+            <p ref={countdownRef} className="g-countdown">
                 {3 - data.game.countdown}
             </p>
         </>
