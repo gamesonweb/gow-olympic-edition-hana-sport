@@ -1,0 +1,602 @@
+{
+  "id": 1,
+  "name": "kart_map1",
+  "metadata": {
+    "checkpoints": [
+      1,
+      16,
+      15,
+      14,
+      12,
+      13,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2
+    ],
+    "spawnPoints": [
+      17,
+      18,
+      20,
+      19,
+      21
+    ]
+  },
+  "objects": [
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 1,
+      "config": 0,
+      "name": "Checkpoint_1",
+      "position": {
+        "x": -16.682,
+        "y": 0.893,
+        "z": 5.703
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1799984,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.5547,
+        "y": 1.6113,
+        "z": 1.0
+      },
+      "isStart": true,
+      "order": 16,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 2,
+      "config": 0,
+      "name": "Checkpoint_2",
+      "position": {
+        "x": -18.56,
+        "y": 0.893,
+        "z": -0.54
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 359.273132,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.55469942,
+        "y": 1.6113,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 15,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 3,
+      "config": 0,
+      "name": "Checkpoint_3",
+      "position": {
+        "x": -14.27,
+        "y": 0.893,
+        "z": -4.76
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.554701,
+        "y": 1.6113,
+        "z": 1.00000024
+      },
+      "isStart": false,
+      "order": 14,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 4,
+      "config": 0,
+      "name": "Checkpoint_4",
+      "position": {
+        "x": -10.981,
+        "y": 2.244,
+        "z": -8.653
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.219986,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 3.36999941,
+        "y": 6.02,
+        "z": 0.9999998
+      },
+      "isStart": false,
+      "order": 13,
+      "isSafeRespawnCandidate": false,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 5,
+      "config": 0,
+      "name": "Checkpoint_5",
+      "position": {
+        "x": -14.6,
+        "y": 3.964,
+        "z": -8.91
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 78.06,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 3.00000048,
+        "y": 1.6113,
+        "z": 1.00000012
+      },
+      "isStart": false,
+      "order": 12,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 6,
+      "config": 0,
+      "name": "Checkpoint_6",
+      "position": {
+        "x": -16.492,
+        "y": 3.964,
+        "z": -12.41
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.64,
+        "y": 1.6113,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 11,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 7,
+      "config": 0,
+      "name": "Checkpoint_7",
+      "position": {
+        "x": -13.55,
+        "y": 5.85,
+        "z": -14.03
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 100.740112,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.010001,
+        "y": 4.33,
+        "z": 1.00000024
+      },
+      "isStart": false,
+      "order": 10,
+      "isSafeRespawnCandidate": false,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 8,
+      "config": 0,
+      "name": "Checkpoint_8",
+      "position": {
+        "x": -7.54,
+        "y": 6.47,
+        "z": -15.63
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 100.740112,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.05000162,
+        "y": 3.38,
+        "z": 1.00000024
+      },
+      "isStart": false,
+      "order": 9,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 9,
+      "config": 0,
+      "name": "Checkpoint_9",
+      "position": {
+        "x": 0.54,
+        "y": 5.95,
+        "z": -16.02
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.49999,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.050001,
+        "y": 2.19,
+        "z": 1.00000012
+      },
+      "isStart": false,
+      "order": 8,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 10,
+      "config": 0,
+      "name": "Checkpoint_10",
+      "position": {
+        "x": 3.45,
+        "y": 7.43,
+        "z": -14.64
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 11.09,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.05,
+        "y": 5.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 7,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 11,
+      "config": 0,
+      "name": "Checkpoint_11",
+      "position": {
+        "x": 6.39,
+        "y": 6.73,
+        "z": -1.62
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 11.09,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.05,
+        "y": 7.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 6,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 12,
+      "config": 0,
+      "name": "Checkpoint_12",
+      "position": {
+        "x": 5.57,
+        "y": 1.55,
+        "z": 11.86
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 329.93,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.05000067,
+        "y": 3.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 4,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 13,
+      "config": 0,
+      "name": "Checkpoint_13",
+      "position": {
+        "x": 6.52,
+        "y": 1.55,
+        "z": 8.05
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 348.04,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.05,
+        "y": 3.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 5,
+      "isSafeRespawnCandidate": false,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 14,
+      "config": 0,
+      "name": "Checkpoint_14",
+      "position": {
+        "x": -5.66,
+        "y": 1.5,
+        "z": 15.86
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.000001,
+        "y": 3.0,
+        "z": 1.00000024
+      },
+      "isStart": false,
+      "order": 3,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 15,
+      "config": 0,
+      "name": "Checkpoint_15",
+      "position": {
+        "x": -9.54,
+        "y": 2.5,
+        "z": 14.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 44.59999,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 5.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 2,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 1,
+      "typeName": "KartCheckpointDefinition",
+      "id": 16,
+      "config": 0,
+      "name": "Checkpoint_16",
+      "position": {
+        "x": -13.3,
+        "y": 1.5,
+        "z": 10.52
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 44.59999,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 3.0,
+        "z": 1.0
+      },
+      "isStart": false,
+      "order": 1,
+      "isSafeRespawnCandidate": true,
+      "canBeSkipped": false
+    },
+    {
+      "type": 2,
+      "typeName": "KartSpawnPositionDefinition",
+      "id": 17,
+      "config": 0,
+      "name": "SpawnPoint_17",
+      "position": {
+        "x": -17.012,
+        "y": 0.72,
+        "z": 4.579
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1999969,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "order": 0
+    },
+    {
+      "type": 2,
+      "typeName": "KartSpawnPositionDefinition",
+      "id": 18,
+      "config": 0,
+      "name": "SpawnPoint_18",
+      "position": {
+        "x": -18.4379978,
+        "y": 0.72,
+        "z": 4.042
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1999969,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "order": 1
+    },
+    {
+      "type": 2,
+      "typeName": "KartSpawnPositionDefinition",
+      "id": 19,
+      "config": 0,
+      "name": "SpawnPoint_19",
+      "position": {
+        "x": -17.477,
+        "y": 0.72,
+        "z": 3.58899975
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1999969,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "order": 3
+    },
+    {
+      "type": 2,
+      "typeName": "KartSpawnPositionDefinition",
+      "id": 20,
+      "config": 0,
+      "name": "SpawnPoint_20",
+      "position": {
+        "x": -16.5269985,
+        "y": 0.72,
+        "z": 3.12
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1999969,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "order": 2
+    },
+    {
+      "type": 2,
+      "typeName": "KartSpawnPositionDefinition",
+      "id": 21,
+      "config": 0,
+      "name": "SPawnPoint_21",
+      "position": {
+        "x": -17.9589977,
+        "y": 0.72,
+        "z": 2.577
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 25.1999969,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "order": 4
+    }
+  ],
+  "models": [
+    {
+      "path": "Room_Floor.glb",
+      "position": {
+        "x": 0.0,
+        "y": 0.05,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "path": "Room_Props.glb",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    }
+  ]
+}

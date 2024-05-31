@@ -1,0 +1,47 @@
+{
+    "characters": [
+        {
+            "id": 1,
+            "name": "Character Test",
+            "movement": {
+                "speed": 5,
+                "acceleration": 2.5,
+                "deceleration": 0.5,
+                "brake": 2,
+                "rotationSpeed": 0.8,
+                "collider": {
+                    "x": 0.225,
+                    "y": 0.2,
+                    "z": 0.3
+                }
+            },
+            "render": {
+                "model": "models/characters/Kart_1.glb",
+                "scale": 0.125,
+                "offset": {
+                    "x": 0,
+                    "y": -0.1,
+                    "z": 0
+                }
+            },
+            "animation": {
+
+            }
+        }
+    ],
+    "audios": [
+        {
+            "id": 1,
+            "name": "Ambiant_1",
+            "type": 0,
+            "location": 0,
+            "volume": 0.5,
+            "loop": true,
+            "audio": "audios/ambiant.mp3",
+            "area": []
+        }
+    ],
+    "globals": {
+
+    }
+}
