@@ -1,7 +1,7 @@
-﻿import "./enterusername.css";
+﻿import "./connectToServer.css";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
-import {useContext, useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import {PageContext} from "../../index";
 import {PageType} from "../../PageType";
 import ApiClient from "../../api/client";
@@ -37,12 +37,14 @@ function ConnectToServer() {
     console.log("Connect to server");
     return (
         <>
-            <div className="eu-background">
+            <div className="cs-background">
                 <div className="title">
                     <h1>Kart Clash</h1>
                     <img src={TitleBackground} alt="Title Background"/>
                 </div>
-                <p>Connect to Server...</p>
+                <div className="cs-content">
+                    <p>Connect to Server...</p>
+                </div>
                 <img className="hanalogo" src={HanaGamesLogo} alt="Hana Games"/>
             </div>
         </>
