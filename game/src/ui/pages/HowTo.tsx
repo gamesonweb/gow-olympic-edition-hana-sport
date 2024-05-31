@@ -23,6 +23,7 @@ function HowTo() {
                         <h2>How to play</h2>
                         <p>Use Z or W to accelerate. Use S to brake.</p>
                         <p>Use Q or A to turn left. Use D to turn right.</p>
+                        <p>Use M to respawn (if you get stuck).</p>
                         <p>Do as many laps as needed and be the first to cross the finish line!</p>
                     </div>
                     <div className='submit'>

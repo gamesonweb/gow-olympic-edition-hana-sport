@@ -1,10 +1,11 @@
 ﻿import "./game.css";
-import {useState, useEffect, useRef, useContext} from "react";
+import React, {useEffect, useRef, useContext} from "react";
 import Utils from "../Utils";
-import {PageContext} from "../../index";
+import {GameContext, PageContext} from "../../index";
 
 function Game() {
     const {data} = useContext(PageContext);
+    const {onRespawn} = useContext(GameContext);
 
     const endRank = useRef<HTMLDivElement>(null);
     const countdownRef = useRef<HTMLParagraphElement>(null);
@@ -23,8 +24,7 @@ function Game() {
     useEffect(() => {
         if (data.game.countdown <= 0) {
             countdownRef.current.style.display = "none";
-        }
-        else {
+        } else {
             countdownRef.current.style.display = "block";
         }
     }, [data.game.countdown]);
@@ -44,6 +44,13 @@ function Game() {
             </div>
             <div className='g-position'>
                 <p>{Utils.convertPosition(data.game.position)}</p>
+            </div>
+            <div className="g-respawn">
+                <div className='submit'>
+                    <button onClick={onRespawn}>
+                        Respawn (M)
+                    </button>
+                </div>
             </div>
             <p ref={countdownRef} className="g-countdown">
                 {data.game.countdown}

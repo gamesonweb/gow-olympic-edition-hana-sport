@@ -54,7 +54,7 @@ const ChangePage = (pageType: PageType) => {
         case PageType.Controller:
             return <Controller/>
         case PageType.Game:
-            return <Game/>
+            return <GameProvider/>
         case PageType.Ranking:
             return <Ranking/>
         case PageType.HowTo:
@@ -224,6 +224,7 @@ export const PageProvider = () => {
         localStorage.setItem('id', data.id)
     }, [data.selection.username, data.selection.keyboard, data.id])
 
+
     ApiClient.instance.onConnectionError = () => {
         setPage(PageType.ConnectToServer)
     };
@@ -267,6 +268,23 @@ export const RankingProvider = ({children}: any) => {
         <RankingContext.Provider value={{rankings, setRankings}}>
             {children}
         </RankingContext.Provider>
+    )
+}
+
+export const GameContext = createContext({
+    onRespawn: () => {
+    }
+})
+
+export const GameProvider = () => {
+    const onRespawn = useCallback(() => {
+        console.log('Respawn')
+    }, []);
+
+    return (
+        <GameContext.Provider value={{onRespawn}}>
+            <Game/>
+        </GameContext.Provider>
     )
 }
 
