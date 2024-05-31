@@ -4,6 +4,7 @@ import HanaGamesLogo from "../assets/common/HanaGames.png";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import {useContext, useRef, useState} from "react";
 import {PageContext} from "../../index";
+import {PageType} from "../../PageType";
 
 function Vehicle() {
     const page = useContext(PageContext);
@@ -36,7 +37,7 @@ function Vehicle() {
 
     const back = () => {
         console.log("Back clicked");
-        page.setPage("MainMenu");
+        page.setPage(PageType.MainMenu);
     };
 
     return (

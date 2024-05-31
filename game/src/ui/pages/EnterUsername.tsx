@@ -3,6 +3,7 @@ import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import {useContext} from "react";
 import {PageContext} from "../../index";
+import {PageType} from "../../PageType";
 
 function EnterUsername() {
     const page = useContext(PageContext);
@@ -10,7 +11,7 @@ function EnterUsername() {
         e.preventDefault();
         console.log("Submit clicked with value: " + e.target.username.value);
         page.data.selection.username = e.target.username.value;
-        page.setPage("Keyboard");
+        page.setPage(PageType.Keyboard);
     }
     return (
         <>

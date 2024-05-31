@@ -5,12 +5,13 @@ import S0 from "../assets/company/S0.png";
 import S1 from "../assets/company/S1.png";
 import {PageContext} from "../../index";
 import {useContext} from "react";
+import {PageType} from "../../PageType";
 
 function Company() {
     const page = useContext(PageContext);
     const back = () => {
         console.log("Back");
-        page.setPage("MainMenu");
+        page.setPage(PageType.MainMenu);
     }
     return (
         <>

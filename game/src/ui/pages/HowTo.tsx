@@ -3,12 +3,13 @@ import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import {PageContext} from "../../index";
 import {useContext} from "react";
+import {PageType} from "../../PageType";
 
 function HowTo() {
     const page = useContext(PageContext);
     const back = () => {
         console.log("Back");
-        page.setPage("MainMenu");
+        page.setPage(PageType.MainMenu);
     }
     return (
         <>

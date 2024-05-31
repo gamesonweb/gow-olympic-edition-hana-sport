@@ -3,6 +3,7 @@ import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import RankingComponent from "../components/RankingComponent";
 import {useContext} from "react";
 import {PageContext} from "../../index";
+import {PageType} from "../../PageType";
 
 function Ranking() {
     const page = useContext(PageContext);
@@ -26,7 +27,7 @@ function Ranking() {
                     }
                 </div>
                 <div className='submit'>
-                    <a onClick={() => page.setPage("MainMenu")}>Main Menu</a>
+                    <a onClick={() => page.setPage(PageType.MainMenu)}>Main Menu</a>
                 </div>
             </div>
         </>

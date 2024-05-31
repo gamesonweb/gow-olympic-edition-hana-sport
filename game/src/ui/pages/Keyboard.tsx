@@ -5,6 +5,7 @@ import AZERTY from "../assets/keyboard/AZERTY.png";
 import QWERTY from "../assets/keyboard/QWERTY.png";
 import {PageContext} from "../../index";
 import {useContext} from "react";
+import {PageType} from "../../PageType";
 
 function Keyboard() {
     const page = useContext(PageContext);
@@ -16,13 +17,13 @@ function Keyboard() {
     const chooseAZERTY = () => {
         console.log("AZERTY");
         page.data.selection.keyboard = "AZERTY";
-        page.setPage("MainMenu");
+        page.setPage(PageType.MainMenu);
     }
 
     const chooseQWERTY = () => {
         console.log("QWERTY");
         page.data.selection.keyboard = "QWERTY";
-        page.setPage("MainMenu");
+        page.setPage(PageType.MainMenu);
     }
     return (
         <>
