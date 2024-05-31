@@ -97,12 +97,12 @@ export class Battle {
             // get distance of the character from the line formed by the two checkpoints
             const characterPosition = character.position;
             const characterDistanceToCheckpoint = this._distanceFromLine(characterPosition, checkpointRay[0], checkpointRay[1]);
-            console.log("Player " + i + " distance to next checkpoint: " + characterDistanceToCheckpoint);
             if (characterDistanceToCheckpoint.length() > 5) {
                 character.position = currentCheckpoint.position;
                 character.rotation = currentCheckpoint.rotation;
                 character.getComponent(MovementComponent).resyncPhysics();
             }
+            i++;
         }
     }
 

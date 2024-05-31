@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-proto": "protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=src/api/pb --js_out=src/api/pb --ts_opt=esModuleInterop=true --proto_path=../server/pb-def ../server/pb-def/*.proto && python3 proto-gen-msg-factory.py --proto ../server/pb-def --out src/api/pb/factory.ts",
+    "build-proto": "protoc --plugin=\"./node_modules/.bin/protoc-gen-ts_proto\" --ts_proto_opt=esModuleInterop=true --ts_out src/api/pb --js_out=\"import_style=commonjs,binary:src/api/pb\" --ts_opt \"long_type_string\" --proto_path=../server/pb-def ../server/pb-def/*.proto && python3 proto-gen-msg-factory.py --proto ../server/pb-def --out src/api/pb/factory.ts",
     "start": "webpack-dev-server --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
     "test": "echo \"Error: no test specified\" && exit 1"

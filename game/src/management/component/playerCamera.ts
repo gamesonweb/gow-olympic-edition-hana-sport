@@ -42,10 +42,7 @@ export default class PlayerCamera implements ISceneComponent {
             const ray = targetCameraPosition.subtract(targetPosition);
             const raycast = this._scene.pickWithRay(new Ray(targetPosition, ray.normalizeToNew(), ray.length()));
             if (raycast.hit) {
-                const distToTarget = raycast.pickedPoint.subtract(targetPosition).length();
-                if (distToTarget < 5) {
-                    targetCameraPosition.copyFrom(this._calculateCameraPosition(new Vector3(0, 7, -6)))
-                }
+                targetCameraPosition.copyFrom(this._calculateCameraPosition(new Vector3(0, 7, -6)))
             }
 
             this._camera.position = Vector3.Lerp(this._camera.position, targetCameraPosition, this._speed * t);

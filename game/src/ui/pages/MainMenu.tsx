@@ -4,10 +4,14 @@ import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import {PageContext} from "../../index";
 import {useContext} from "react";
 import {PageType} from "../../PageType";
+import ApiClient from "../../api/client";
 
 function MainMenu() {
     const page = useContext(PageContext);
-
+    if (!ApiClient.instance || !ApiClient.instance.connected) {
+        page.setPage(PageType.ConnectToServer);
+        return <></>;
+    }
     return (
         <>
             <div className='mm-background'>

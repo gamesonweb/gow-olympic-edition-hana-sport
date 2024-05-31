@@ -1,4 +1,5 @@
 export enum PageType {
+    ConnectToServer,
     MainMenu,
     EnterUsername,
     Vehicle,

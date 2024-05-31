@@ -1,10 +1,25 @@
 ﻿import "./matchmaking.css";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {PageContext} from "../../index";
+import ApiClient from "../../api/client";
+import {JoinMatchmakingMsg} from "../../api/pb/game_pb";
 
 function Matchmaking() {
     const page = useContext(PageContext);
+    /*useEffect(() => {
+        if (!page.data.matchmaking.inMatchmaking) {
+            const joinMatchmaking = new JoinMatchmakingMsg();
+            joinMatchmaking.setCharacterConfigId(page.data.selection.vehicle);
+            ApiClient.instance.send(joinMatchmaking);
+            page.data.matchmaking.inMatchmaking = true;
+            page.data.matchmaking.currentPlayers = 0;
+            page.data.matchmaking.maxPlayers = 0;
+            page.setData(page.data);
+        }
+    }, [page]);*/
+
+
     return (
         <>
             <div className='m-background'>
@@ -17,7 +32,6 @@ function Matchmaking() {
             </div>
         </>
     );
-
 }
 
 export default Matchmaking;

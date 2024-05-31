@@ -21,6 +21,7 @@ import {WebGPUEngine} from '@babylonjs/core';
 import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
 import Map from "./ui/pages/Map";
+import ConnectToServer from "./ui/pages/ConnectToServer";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -48,6 +49,8 @@ const ChangePage = (pageType: PageType) => {
             return <Company/>
         case PageType.Map:
             return <Map/>
+        case PageType.ConnectToServer:
+            return <ConnectToServer/>
         default:
             return <MainMenu/>
     }
@@ -71,6 +74,7 @@ export const PageContext = createContext({
             time: '0:00.000'
         }],
         matchmaking: {
+            inMatchmaking: false,
             currentPlayers: 0,
             maxPlayers: 0,
         },
@@ -89,7 +93,8 @@ export const PageContext = createContext({
             name: 'name',
             image: 'image',
             description: 'description',
-        }]
+        }],
+        id: ""
     },
     setData: (data: any) => {
     }
@@ -133,6 +138,7 @@ const gameData = {
         }
     ],
     matchmaking: {
+        inMatchmaking: false,
         currentPlayers: 0,
         maxPlayers: 5,
     },
@@ -154,7 +160,8 @@ const gameData = {
             image: './assets/maps/Map0.png',
             description: 'In the "Messy Room" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
         }
-    ]
+    ],
+    id: ""
 }
 
 const loadSelection = () => {
@@ -168,9 +175,10 @@ const loadSelection = () => {
 
 export const PageProvider = () => {
     gameData.selection = loadSelection()
+    gameData.id = localStorage.getItem('id') || gameData.id
     let pageName: any;
-    if (gameData.selection.username !== "") {
-        pageName = PageType.MainMenu
+    if (gameData.selection.username !== "" && gameData.selection.keyboard !== "" && gameData.id !== "") {
+        pageName = PageType.ConnectToServer
     } else {
         pageName = PageType.EnterUsername
     }
@@ -184,8 +192,12 @@ export const PageProvider = () => {
         if (data.selection.keyboard === "") {
             return;
         }
+        if (data.id === "") {
+            return;
+        }
         localStorage.setItem('selection', JSON.stringify(data.selection))
-    }, [data.selection.username, data.selection.keyboard])
+        localStorage.setItem('id', data.id)
+    }, [data.selection.username, data.selection.keyboard, data.id])
 
     return (
         <PageContext.Provider value={{page, setPage, data, setData}}>

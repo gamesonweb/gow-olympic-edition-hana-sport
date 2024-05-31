@@ -10,7 +10,11 @@ import (
 	"strings"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 var configFile = flag.String("f", "config.yaml", "the config file")
 
 func main() {

@@ -11,6 +11,15 @@ function EnterUsername() {
         e.preventDefault();
         console.log("Submit clicked with value: " + e.target.username.value);
         page.data.selection.username = e.target.username.value;
+        if (page.data.id === "") {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let id = "";
+            for (let i = 0; i < 16; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            page.data.id = id;
+            console.log("Generated ID: " + page.data.id);
+        }
         page.setPage(PageType.Keyboard);
     }
     return (

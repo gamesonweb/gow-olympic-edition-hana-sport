@@ -3,13 +3,23 @@ import {Create, GetMessageID} from "./pb/factory";
 import {EventList} from "../logic/util/eventList";
 
 export default class ApiClient {
+    public static instance: ApiClient;
+
     private _socket: WebSocket;
     private _connected: boolean = false;
     private _serverUrl: string;
     private _handlers: { [key: number]: ((message: jspb.Message) => void)[] } = {};
     private _sessionInfo: { id: string, name: string };
+    private _connecting: boolean = false;
 
     public onConnectionError: EventList = new EventList();
+
+    static create(serverUrl: string): ApiClient {
+        if (!ApiClient.instance) {
+            ApiClient.instance = new ApiClient(serverUrl);
+        }
+        return ApiClient.instance;
+    }
 
     constructor(serverUrl: string) {
         this._serverUrl = serverUrl;
@@ -36,10 +46,15 @@ export default class ApiClient {
         }
     }
 
+    public isConnecting(): boolean {
+        return this._connecting;
+    }
+
     public connectAsync(): Promise<void> {
         if (this._connected) {
             return Promise.resolve();
         }
+        this._connecting = true;
         return new Promise<void>((resolve, reject) => {
             if (this._socket) {
                 this._socket.close();
@@ -66,10 +81,13 @@ export default class ApiClient {
                         console.error('[ApiClient] Invalid message ID: ' + id);
                     }
                 };
+                this._connecting = false;
+
                 resolve();
             };
             this._socket.onerror = (event) => {
                 console.error('[ApiClient] Connection error: ' + event);
+                this._connecting = false;
                 reject();
             };
             this._socket.onclose = () => {
@@ -78,6 +96,7 @@ export default class ApiClient {
                     this.onConnectionError.trigger();
                 }
                 this._connected = false;
+                this._connecting = false;
             };
         });
     }
