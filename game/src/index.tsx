@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useRef, useState} from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import MainMenu from "./ui/pages/MainMenu";
@@ -34,7 +34,7 @@ const ChangePage = (pageType: PageType) => {
         case PageType.Keyboard:
             return <Keyboard/>
         case PageType.Matchmaking:
-            return <Matchmaking/>
+            return <MatchmakingProvider/>
         case PageType.Controller:
             return <Controller/>
         case PageType.Game:
@@ -171,6 +171,34 @@ const loadSelection = () => {
     } else {
         return gameData.selection
     }
+}
+
+export const MatchmakingContext = createContext({
+    onCancel: () => {
+    },
+    onStart: () => {
+    },
+    currentPlayers: 0,
+    maxPlayers: 0
+})
+
+export const MatchmakingProvider = () => {
+    const onStart = useCallback(() => {
+        console.log("Start clicked");
+    }, [])
+
+    const onCancel = useCallback(() => {
+        console.log("Cancel clicked");
+    }, [])
+
+    const [currentPlayers, setCurrentPlayers] = useState(0)
+    const [maxPlayers, setMaxPlayers] = useState(5)
+
+    return (
+        <MatchmakingContext.Provider value={{onCancel, onStart, currentPlayers, maxPlayers}}>
+            <Matchmaking/>
+        </MatchmakingContext.Provider>
+    )
 }
 
 export const PageProvider = () => {
