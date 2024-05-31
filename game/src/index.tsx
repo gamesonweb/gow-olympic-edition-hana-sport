@@ -40,7 +40,7 @@ const ChangePage = (pageType: PageType) => {
         case PageType.Game:
             return <Game/>
         case PageType.Ranking:
-            return <Ranking/>
+            return <RankingProvider/>
         case PageType.HowTo:
             return <HowTo/>
         case PageType.Credits:
@@ -67,11 +67,6 @@ export const PageContext = createContext({
             speed: 0,
             acceleration: 0,
             brake: 0,
-        }],
-        rankings: [{
-            rank: 0,
-            name: 'name',
-            time: '0:00.000'
         }],
         matchmaking: {
             inMatchmaking: false,
@@ -108,33 +103,6 @@ const gameData = {
             speed: 5,
             acceleration: 2.5,
             brake: 2,
-        }
-    ],
-    rankings: [
-        {
-            rank: 1,
-            name: 'Player 1',
-            time: '1:23.456'
-        },
-        {
-            rank: 2,
-            name: 'Player 2',
-            time: '1:23.456'
-        },
-        {
-            rank: 3,
-            name: 'Player 3',
-            time: '1:23.456'
-        },
-        {
-            rank: 4,
-            name: 'Player 4',
-            time: '1:23.456'
-        },
-        {
-            rank: 5,
-            name: 'Player 5',
-            time: '1:23.456'
         }
     ],
     matchmaking: {
@@ -236,6 +204,27 @@ export const PageProvider = () => {
                 </div>
             </React.StrictMode>
         </PageContext.Provider>
+    )
+}
+
+export const RankingContext = createContext({
+    rankings: [{
+        rank: 0,
+        name: 'name',
+        time: '0:00.000'
+    }]
+})
+
+export const RankingProvider = () => {
+    const [rankings, setRankings] = useState([{
+        rank: 0,
+        name: 'name',
+        time: '0:00.000'
+    }])
+    return (
+        <RankingContext.Provider value={{rankings}}>
+            <Ranking/>
+        </RankingContext.Provider>
     )
 }
 

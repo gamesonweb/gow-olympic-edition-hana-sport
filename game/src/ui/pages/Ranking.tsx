@@ -2,11 +2,12 @@
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import RankingComponent from "../components/RankingComponent";
 import {useContext} from "react";
-import {PageContext} from "../../index";
+import {PageContext, RankingContext} from "../../index";
 import {PageType} from "../../PageType";
 
 function Ranking() {
-    const page = useContext(PageContext);
+    const {rankings} = useContext(RankingContext);
+    const {setPage} = useContext(PageContext);
     return (
         <>
             <div className='title'>
@@ -19,7 +20,7 @@ function Ranking() {
                 </div>
                 <div className='r-ranks'>
                     {
-                        page.data.rankings.map((rank: any, index: number) => {
+                        rankings.map((rank: any, index: number) => {
                             return (
                                 <RankingComponent key={index} rank={rank.rank} name={rank.name} time={rank.time}/>
                             );
@@ -27,7 +28,7 @@ function Ranking() {
                     }
                 </div>
                 <div className='submit'>
-                    <a onClick={() => page.setPage(PageType.MainMenu)}>Main Menu</a>
+                    <a onClick={() => setPage(PageType.MainMenu)}>Main Menu</a>
                 </div>
             </div>
         </>
