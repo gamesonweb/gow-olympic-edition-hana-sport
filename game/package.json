@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-proto": "protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=src/api/pb --js_out=src/api/pb --ts_opt=esModuleInterop=true --proto_path=../server/pb-def ../server/pb-def/*.proto && python3 proto-gen-msg-factory.py --proto ../server/pb-def --out src/api/pb/factory.ts",
     "start": "webpack-dev-server --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -43,6 +44,7 @@
     "buffer": "^6.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "ts-protoc-gen": "^0.15.0",
     "tween.js": "^16.6.0"
   }
 }
