@@ -1,47 +1,29 @@
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="Description" content="Babylon Sample App using TypeScript" />
-
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="Description" content="Babylon Sample App using TypeScript"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&display=swap" rel="stylesheet">
     <title>Nakama Project</title>
 
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css"/>
     {{! <script src="https://cdn.babylonjs.com/cannon.js"></script> }}
     {{! <script src="https://cdn.babylonjs.com/Oimo.js"></script> }}
     <script src="https://cdn.babylonjs.com/ammo.js"></script>
     {{! <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script> }}
-    <link rel="stylesheet" href="assets/space/css/space.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-  </head>
+    <link rel="stylesheet" href="assets/space/css/space.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"/>
+</head>
 
-  <body style="background-color: black; color: black">
-    <div id="game-overlay" style="display: none">
-      <div id="hint-text"></div>
-      <div id="monster-count">Monstres à tuer : 10</div>
-      <div id="player-info">
-        <img id="player-image" src="player.png" alt="Joueur" />
-        <div id="health-bar"></div>
-        <div id="quest-title">Titre de la quête</div>
-        <div id="quest-description">Description de la quête</div>
-      </div>
-      <div id="dialogues" style="display: none">Dialogues du jeu</div>
-    </div>
-    <canvas
-      id="view"
-      style="width: 100%; height: 100%; color: black; background-color: black"
-    ></canvas>
-  </body>
-  <script>
-    const skipButton = document.getElementById("skip-button"); const
-    startpButton = document.getElementById("start-button"); const video =
-    document.getElementById("video"); const videoOverlay =
-    document.getElementById("video-overlay");
-    skipButton.addEventListener("click", () => { videoOverlay.remove();});
-    startpButton.addEventListener("click", () => { startpButton.remove();
-    video.play(); }); video.addEventListener("ended", () => {
-    videoOverlay.remove(); });
-  </script>
+<body>
+<canvas
+        id="view"
+        style="width: 100%; height: 100%; color: black; background-color: black"
+></canvas>
+<div id="root"></div>
+</body>
 </html>

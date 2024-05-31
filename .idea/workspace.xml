@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6c4b85da-4a44-48ef-9e80-43ab22773b06" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/game/src/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/Utils.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/common/HanaGames.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/company/S0.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/company/S1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/keyboard/AZERTY.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/keyboard/QWERTY.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/assets/mainmenu/TitleBackground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/components/RankingComponent.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/components/ranking.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Company.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Controller.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Credits.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/EnterUsername.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Game.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/HowTo.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Keyboard.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/MainMenu.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Matchmaking.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Ranking.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/Vehicle.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/company.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/controller.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/credits.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/enterusername.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/game.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/howto.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/keyboard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/mainmenu.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/matchmaking.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/ranking.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/ui/pages/vehicle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/game/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/game/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/index.hbs" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/index.hbs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/game/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/webpack.config.common.js" beforeDir="false" afterPath="$PROJECT_DIR$/game/webpack.config.common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/Background.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/Background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/GreyButtonBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/GreyButtonBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/GreyButtonBackgroundHover.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/GreyButtonBackgroundHover.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/InputField.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/InputField.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/InstructionBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/InstructionBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/SimpleButtonBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/SimpleButtonBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/common/SimpleButtonBackgroundHover.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/common/SimpleButtonBackgroundHover.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/credits/CreditsBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/credits/CreditsBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/game/LapBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/game/LapBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/game/PositionBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/game/PositionBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/game/RankBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/game/RankBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/game/TimeBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/game/TimeBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/howto/HowToBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/howto/HowToBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/mainmenu/ButtonBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/mainmenu/ButtonBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/mainmenu/ButtonBackgroundActive.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/mainmenu/ButtonBackgroundActive.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/mainmenu/ButtonBackgroundHover.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/mainmenu/ButtonBackgroundHover.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/matchmaking/MatchmakingBackground.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/matchmaking/MatchmakingBackground.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/vehicule/Background.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/vehicule/Background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/public/assets/vehicule/BackroundRepeat.png" beforeDir="false" afterPath="$PROJECT_DIR$/game/public/assets/vehicule/BackroundRepeat.png" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2hERzv1nimCN22M520FpWlkWrG1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Github/gow-olympic-edition-hana-sport/game&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\Github\\gow-olympic-edition-hana-sport\\game\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Github\gow-olympic-edition-hana-sport\game\public\assets" />
+      <recent name="D:\Github\gow-olympic-edition-hana-sport\game\src\ui" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Github\gow-olympic-edition-hana-sport\game\src" />
+      <recent name="D:\Github\gow-olympic-edition-hana-sport\game\public\assets" />
+      <recent name="D:\Github\gow-olympic-edition-hana-sport\game\src\ui" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-WS-241.15989.105" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c4b85da-4a44-48ef-9e80-43ab22773b06" name="Changes" comment="" />
+      <created>1717157516977</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1717157516977</updated>
+      <workItem from="1717157518736" duration="6194000" />
+      <workItem from="1717164009309" duration="791000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

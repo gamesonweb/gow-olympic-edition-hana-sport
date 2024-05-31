@@ -1,0 +1,24 @@
+﻿.c-background {
+    background-image: url("~/public/assets/common/Background.png");
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+}
+
+.c-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    margin: 0 30px;
+    padding: 20px;
+    background-image: url("~/public/assets/credits/CreditsBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+}
