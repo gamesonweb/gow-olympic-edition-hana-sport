@@ -321,11 +321,34 @@ export const LeaderboardContext = createContext({
 
 export const LeaderboardProvider = ({children}: any) => {
     const [rankings, setRankings] = useState([{
-        rank: 0,
-        id: 'id',
-        name: 'name',
-        time: '0:00.000',
-        timeRaw: 0
+        mapName: 'Map0',
+        ranks: [
+            {
+                rank: 0,
+                id: 'id',
+                name: 'name',
+                time: '0:00.000',
+                timeRaw: 0
+            }
+        ]
+    }, {
+        mapName: 'Map1',
+        ranks: [
+            {
+                rank: 0,
+                id: 'id',
+                name: 'name',
+                time: '0:00.000',
+                timeRaw: 0
+            },
+            {
+                rank: 0,
+                id: 'id',
+                name: 'name',
+                time: '0:00.000',
+                timeRaw: 0
+            }
+        ]
     }])
 
     return (

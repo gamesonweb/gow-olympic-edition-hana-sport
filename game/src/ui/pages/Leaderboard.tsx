@@ -8,6 +8,8 @@ import {PageType} from "../../PageType";
 function Leaderboard() {
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(rankings[0]);
+    const [index, setIndex] = useState(0);
     const {setPage} = useContext(PageContext);
     const back = () => {
         setPage(PageType.MainMenu);
@@ -21,6 +23,20 @@ function Leaderboard() {
                 setLoading(false);
             });
     }, []);
+    
+    const previous = () => {
+        console.log("Previous clicked");
+        const newIndex = (index - 1 + rankings.length) % rankings.length;
+        setIndex(newIndex);
+        setData(rankings[newIndex]);
+    };
+
+    const next = () => {
+        console.log("Next clicked");
+        const newIndex = (index + 1) % rankings.length;
+        setIndex(newIndex);
+        setData(rankings[newIndex]);
+    };
 
     return (
         <>
@@ -52,8 +68,16 @@ function Leaderboard() {
                             ) : (
                                 <p className="l-info">No data :(</p>
                             )
-                        )
-                        }
+                        )}
+                    </div>
+                    <div className="l-nav">
+                        <button onClick={previous}>
+                            Previous
+                        </button>
+                        <p>{data.mapName}</p>
+                        <button onClick={next}>
+                            Next
+                        </button>
                     </div>
                     <div className='submit'>
                         <button className='l-back' onClick={back}>
