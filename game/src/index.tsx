@@ -55,6 +55,7 @@ import {GameObjectType} from "./logic/gameobject/gameObject";
 import Character from "./logic/gameobject/character";
 import InputManager, {ControllerInput} from "./management/inputmanager";
 import {Vector2} from "@babylonjs/core/Maths/math.vector";
+import Leaderboard from './ui/pages/Leaderboard';
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -86,6 +87,8 @@ const ChangePage = (pageType: PageType) => {
             return <ConnectToServer/>
         case PageType.Waiting:
             return <Waiting/>
+        case PageType.Leaderboard:
+            return <Leaderboard/>
         default:
             return <MainMenu/>
     }
@@ -266,16 +269,25 @@ export const PageProvider = () => {
 
     return (
         <PageContext.Provider value={{page, setPage, data, setData, state, setState}}>
-            <RankingProvider>
-                <BabylonScene/>
-                <React.StrictMode>
-                    <div id="game">
-                        {ChangePage(page)}
-                    </div>
-                </React.StrictMode>
-            </RankingProvider>
+            <LeaderboardProvider>
+                <RankingProvider>
+                    <BabylonScene/>
+                    <React.StrictMode>
+                        <div id="game">
+                            {ChangePage(page)}
+                        </div>
+                    </React.StrictMode>
+                </RankingProvider>
+            </LeaderboardProvider>
         </PageContext.Provider>
     )
+}
+
+const timeToString = (time: number) => {
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    const millis = Math.floor((time - Math.floor(time)) * 1000);
+    return `${mins}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`
 }
 
 export const RankingContext = createContext({
@@ -283,12 +295,6 @@ export const RankingContext = createContext({
     setRankings: (rankings: any) => {
     }
 })
-const timeToString = (time: number) => {
-    const mins = Math.floor(time / 60);
-    const secs = Math.floor(time % 60);
-    const millis = Math.floor((time - Math.floor(time)) * 1000);
-    return `${mins}:${secs.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`
-}
 
 export const RankingProvider = ({children}: any) => {
     const [rankings, setRankings] = useState([{
@@ -303,6 +309,28 @@ export const RankingProvider = ({children}: any) => {
         <RankingContext.Provider value={{rankings, setRankings}}>
             {children}
         </RankingContext.Provider>
+    )
+}
+
+export const LeaderboardContext = createContext({
+    rankings: [],
+    setRankings: (rankings: any) => {
+    }
+})
+
+export const LeaderboardProvider = ({children}: any) => {
+    const [rankings, setRankings] = useState([{
+        rank: 0,
+        id: 'id',
+        name: 'name',
+        time: '0:00.000',
+        timeRaw: 0
+    }])
+
+    return (
+        <LeaderboardContext.Provider value={{rankings, setRankings}}>
+            {children}
+        </LeaderboardContext.Provider>
     )
 }
 

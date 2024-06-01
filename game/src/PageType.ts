@@ -13,4 +13,5 @@ export enum PageType {
     Company,
     Map,
     Waiting,
+    Leaderboard,
 }

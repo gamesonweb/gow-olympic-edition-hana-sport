@@ -1,0 +1,66 @@
+.l-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: 0 30px;
+}
+
+.l-title {
+    color: white;
+    font-size: 40px;
+    background-image: url("~/public/assets/game/TimeBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 10px;
+}
+
+.l-title > p {
+    padding: 20px;
+    margin: 0;
+}
+
+.l-rank {
+    width: 350px;
+    background: rgb(240, 236, 10);
+    background: linear-gradient(
+            0deg,
+            rgba(63, 122, 190, 1) 0%,
+            rgba(84, 163, 255, 1) 100%
+    );
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.l-ranks {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.l-background {
+    background-image: url("~/public/assets/common/Background.png");
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+}
+
+.l-back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-image: url("~/public/assets/common/GreyButtonBackground.png") !important;
+}
+
+.l-back:hover {
+    background-image: url("~/public/assets/common/GreyButtonBackgroundHover.png") !important;
+}
