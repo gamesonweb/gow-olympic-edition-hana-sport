@@ -3,6 +3,7 @@ import {KartCheckpointObject} from "../config/scene";
 import {Vector3} from "@babylonjs/core";
 import Character from "./character";
 import CharacterConfig from "../config/gameobject/character";
+import MovementComponent from "./component/movement";
 
 export class Checkpoint extends GameObject {
     private _isStart: boolean;
@@ -27,11 +28,12 @@ export class Checkpoint extends GameObject {
     }
 
     private _isInsideBox(position: Vector3): boolean {
-        const dist = position.subtract(this.position);
-        const x = Math.abs(dist.x);
-        const y = Math.abs(dist.y);
-        const z = Math.abs(dist.z);
-        return x <= Math.abs(this.scale.x / 2) && y <= Math.abs(this.scale.y / 2) && z <= Math.abs(this.scale.z / 2);
+        const center = this.position;
+        const rotation = this.rotation;
+        const half = this.scale.clone().scale(0.5);
+        const d = position.subtract(center);
+        d.rotateByQuaternionAroundPointToRef(rotation.toQuaternion(), Vector3.Zero(), d);
+        return Math.abs(d.x) <= Math.abs(half.x) && Math.abs(d.y) <= Math.abs(half.y) && Math.abs(d.z) <= Math.abs(half.z);
     }
 
     update(t: number) {
@@ -39,6 +41,10 @@ export class Checkpoint extends GameObject {
         for (const [objectId, object] of objects) {
             if (object.type == GameObjectType.Character) {
                 const character = object as Character;
+                const movementComponent = character.findComponent(MovementComponent);
+                if (!movementComponent || !movementComponent.owned) {
+                    continue;
+                }
                 if (this.isInside(character.position, character.rotation, (character.config as CharacterConfig).movement.collider)) {
                     this.level.battle.onCheckpointReached(character.playerIndex, this.id);
                 }
@@ -48,14 +54,14 @@ export class Checkpoint extends GameObject {
 
     public isInside(position: Vector3, rotation: Vector3, collisionBox: { x: number, y: number, z: number }): boolean {
         const boundingBox = [
-            new Vector3(-collisionBox.x, 0, -collisionBox.z),
-            new Vector3(-collisionBox.x, 0, collisionBox.z),
-            new Vector3(collisionBox.x, 0, collisionBox.z),
-            new Vector3(collisionBox.x, 0, -collisionBox.z),
+            new Vector3(-collisionBox.x / 2, 0, -collisionBox.z / 2),
+            new Vector3(-collisionBox.x / 2, 0, collisionBox.z / 2),
+            new Vector3(collisionBox.x / 2, 0, collisionBox.z / 2),
+            new Vector3(collisionBox.x / 2, 0, -collisionBox.z / 2),
             new Vector3(0, 0, 0)
         ];
+        Checkpoint._applyRotationToBoundingBox(rotation, boundingBox);
         for (let i = 0; i < boundingBox.length; i++) {
-            boundingBox[i].rotateByQuaternionAroundPointToRef(rotation.toQuaternion(), Vector3.Zero(), boundingBox[i]);
             boundingBox[i].addInPlace(position);
         }
         for (let i = 0; i < boundingBox.length; i++) {
@@ -64,5 +70,11 @@ export class Checkpoint extends GameObject {
             }
         }
         return false;
+    }
+
+    private static _applyRotationToBoundingBox(rotation: Vector3, boundingBox: Vector3[]): void {
+        for (let i = 0; i < boundingBox.length; i++) {
+            boundingBox[i].rotateByQuaternionAroundPointToRef(rotation.toQuaternion(), Vector3.Zero(), boundingBox[i]);
+        }
     }
 }

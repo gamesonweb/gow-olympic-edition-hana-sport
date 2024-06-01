@@ -9,6 +9,9 @@ export default abstract class Scene extends BScene {
 
   constructor(engine: Engine) {
     super(engine);
+    engine.onDisposeObservable.add(() => {
+        this.destroy();
+    });
   }
 
   public async init(): Promise<void> {

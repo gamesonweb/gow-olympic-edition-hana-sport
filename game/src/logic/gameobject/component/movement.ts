@@ -72,7 +72,6 @@ class MovementComponent extends Component {
                 if (Math.abs(zDeg) > 60) {
                     angularVelocity.z = 3 * Math.sign(zDeg);
                 }
-                console.log("X: " + xDeg + " Z: " + zDeg);
                 this._physicsAggregate.body.setAngularVelocity(angularVelocity);
             } else {
                 const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
@@ -184,6 +183,14 @@ class MovementComponent extends Component {
 
     public set enabled(value: boolean) {
         this._enabled = value;
+    }
+
+    public get enabled(): boolean {
+        return this._enabled;
+    }
+
+    public get owned(): boolean {
+        return this._owned;
     }
 }
 
