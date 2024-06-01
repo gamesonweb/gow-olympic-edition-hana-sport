@@ -1,9 +1,12 @@
 import Character from "../../logic/gameobject/character";
 import MovementComponent from "../../logic/gameobject/component/movement";
-import InputManager from "../inputmanager";
+import InputManager, {ControllerInput} from "../inputmanager";
 import ISceneComponent from "./interface";
 import CinematicComponent from "./cinematic";
 import Scene from "../../scenes/scene";
+import PlatformUtil from "../../logic/util/platformUtil";
+import {VirtualJoystick} from "@babylonjs/core";
+import {Vector2} from "@babylonjs/core/Maths/math.vector";
 
 export default class PlayerInput implements ISceneComponent {
     public static KEY_FORWARD: string = "z";
@@ -45,14 +48,13 @@ export default class PlayerInput implements ISceneComponent {
 
         const movementComponent = this._character.findComponent(MovementComponent);
         if (movementComponent) {
-            const axisX = this.getKeyAxis(PlayerInput.KEY_RIGHT) - this.getKeyAxis(PlayerInput.KEY_LEFT);
-            const axisY = this.getKeyAxis(PlayerInput.KEY_FORWARD) - this.getKeyAxis(PlayerInput.KEY_BACKWARD);
+            const direction = this._readMoveVector();
             const drift = InputManager.isKeyDown(PlayerInput.KEY_DRIFT, false);
             const respawn = InputManager.isKeyDown(PlayerInput.KEY_RESPAWN, true);
 
             const input = movementComponent.input;
-            input.axis.x = axisX;
-            input.axis.y = axisY;
+            input.axis.x = direction.x;
+            input.axis.y = direction.y;
             input.respawn = respawn;
             input.drift = drift;
         }
@@ -60,5 +62,19 @@ export default class PlayerInput implements ISceneComponent {
 
     private getKeyAxis(key: string): number {
         return InputManager.isKeyDown(key) ? 1 : 0;
+    }
+
+    private _readMoveVector(): Vector2 {
+        const controllerInput = new Vector2(
+            InputManager.getControllerInput(ControllerInput.R2) - InputManager.getControllerInput(ControllerInput.L2),
+            InputManager.getControllerInput(ControllerInput.LEFT_STICK_Y)
+        );
+        if (controllerInput.length() > 0.01) {
+            return controllerInput;
+        }
+        return new Vector2(
+            this.getKeyAxis(PlayerInput.KEY_RIGHT) - this.getKeyAxis(PlayerInput.KEY_LEFT),
+            this.getKeyAxis(PlayerInput.KEY_FORWARD) - this.getKeyAxis(PlayerInput.KEY_BACKWARD)
+        );
     }
 }

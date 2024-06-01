@@ -19,7 +19,7 @@ export default class PlayerCamera implements ISceneComponent {
         this._scene = scene;
         this._camera = camera;
         this._camera.mode = Camera.PERSPECTIVE_CAMERA;
-        this._camera.fov = 0.3;
+        this._camera.fov = 0.6;
         this._camera.position = offset;
         this._camera.parent = null;
 
@@ -40,12 +40,21 @@ export default class PlayerCamera implements ISceneComponent {
             const targetCameraPosition = this._calculateCameraPosition(this._offset);
             // raycast to check if camera is inside a wall
             const ray = targetCameraPosition.subtract(targetPosition);
-            const raycast = this._scene.pickWithRay(new Ray(targetPosition, ray.normalizeToNew(), ray.length()));
+            const raycast = this._scene.pickWithRay(new Ray(targetPosition, ray.normalizeToNew(), ray.length() - 0.5));
             if (raycast.hit) {
-                targetCameraPosition.copyFrom(this._calculateCameraPosition(new Vector3(0, 7, -6)))
+                if (raycast.pickedPoint.clone().subtract(targetPosition).length() < 1.2) {
+                    targetCameraPosition.copyFrom(this._calculateCameraPosition(new Vector3(0, 7, -6)))
+                } else {
+                    targetCameraPosition.copyFrom(raycast.pickedPoint);
+                }
             }
 
-            this._camera.position = Vector3.Lerp(this._camera.position, targetCameraPosition, this._speed * t);
+            const cameraPosition = this._camera.position;
+            cameraPosition.x = PlayerCamera._lerp(cameraPosition.x, targetCameraPosition.x, t * this._speed);
+            cameraPosition.y = PlayerCamera._lerp(cameraPosition.y, targetCameraPosition.y, t * this._speed / 3);
+            cameraPosition.z = PlayerCamera._lerp(cameraPosition.z, targetCameraPosition.z, t * this._speed);
+            this._camera.position = cameraPosition;
+
             this._camera.setTarget(targetPosition.clone().add(this._targetOffset));
         } else {
             console.warn('No target set for player camera');
@@ -99,5 +108,9 @@ export default class PlayerCamera implements ISceneComponent {
     public destroy(): void {
         this._camera = null;
         this._target = null;
+    }
+
+    private static _lerp(a: number, b: number, t: number): number {
+        return a + (b - a) * Math.min(1, Math.max(0, t));
     }
 }

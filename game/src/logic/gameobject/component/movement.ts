@@ -14,9 +14,11 @@ class MovementComponent extends Component {
     private _rotationRate: number = 0;
     private _owned: boolean = true;
     private _enabled: boolean = true;
+    private _driftDirection: number = 0;
 
     private _serverPosition: Vector3 = Vector3.Zero();
     private _serverRotation: Vector3 = Vector3.Zero();
+    private _serverVelocity: Vector3 = Vector3.Zero();
 
     public input = new MovementInput();
 
@@ -43,13 +45,16 @@ class MovementComponent extends Component {
             // reset linear and angular velocity
             this._physicsAggregate.body.setLinearVelocity(Vector3.Zero());
             this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
-
-            this.parent.position = this._physicsObject.position;
-            this.parent.rotation = this._physicsObject.rotationQuaternion.toEulerAngles();
-            return;
+            this._physicsAggregate.body.setLinearVelocity(this._serverVelocity);
+            this._serverVelocity.x = MovementComponent.lerp(this._serverVelocity.x, 0, t);
+            this._serverVelocity.y = MovementComponent.lerp(this._serverVelocity.y, 0, t);
+            this._serverVelocity.z = MovementComponent.lerp(this._serverVelocity.z, 0, t);
         }
         this.parent.position = this._physicsObject.position;
         this.parent.rotation = this._physicsObject.rotationQuaternion.toEulerAngles();
+        if (!this._owned) {
+            return;
+        }
 
         // raycast to check if grounded
         const downRotation = Vector3.TransformNormal(Vector3.Down(), this._physicsObject.getWorldMatrix());
@@ -95,9 +100,17 @@ class MovementComponent extends Component {
                 targetSpeedLerpCoefficient = this._config.acceleration;
             }
 
-            if (this.input.drift) {
-                targetSpeed /= 2;
-                targetSpeedLerpCoefficient = this._config.brake;
+            if (this.input.drift && Math.abs(direction.y) > 0.5) {
+                if (this._driftDirection === 0) {
+                    this._driftDirection = Math.sign(direction.x);
+                    if (this._driftDirection === 0) {
+                        this._driftDirection = Math.random() < 0.5 ? -1 : 1;
+                    }
+                }
+                direction.x *= 0.75;
+                direction.x += this._driftDirection * 0.9;
+            } else {
+                this._driftDirection = 0;
             }
 
             const forwardVelocity = new Vector2(currentVelocity.x, currentVelocity.z);
@@ -116,8 +129,7 @@ class MovementComponent extends Component {
 
             this._rotationRate = MovementComponent.lerp(this._rotationRate, direction.x, t * 10);
 
-            const speedMultiplier = this.input.drift ? 4 : 1;
-            const targetAngularVelocity = this._config.rotationSpeed * this._rotationRate * this._speedRate * speedMultiplier;
+            const targetAngularVelocity = this._config.rotationSpeed * this._rotationRate * this._speedRate;
             const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
             angularVelocity.y = targetAngularVelocity;
             angularVelocity.x = Math.sign(angularVelocity.x) * Math.min(Math.abs(angularVelocity.x), 2);
@@ -138,7 +150,7 @@ class MovementComponent extends Component {
 
     public resyncPhysics(teleportToGround = true): void {
         if (!this._physicsAggregate) {
-            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: this._owned ? 1 : 0, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0, friction: 0.05 });
+            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: 1, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0, friction: 0.05 });
             this._physicsAggregate.body.disablePreStep = !this._owned;
         }
         this._physicsObject.position = this.parent.position.clone();
@@ -161,10 +173,6 @@ class MovementComponent extends Component {
     private static lerp(a: number, b: number, t: number): number {
         return a + (b - a) * t;
     }
-    private static getAngle180(angleRad: number): number {
-        const angleDeg = angleRad * 180 / Math.PI;
-        return (angleDeg + 180) % 360 - 180;
-    }
 
     private static clamp(value: number, min: number, max: number): number {
         return Math.max(min, Math.min(max, value));
@@ -173,6 +181,7 @@ class MovementComponent extends Component {
     public onServerUpdate(position: Vector3, rotation: Vector3, velocity: Vector3) {
         this._serverPosition = position;
         this._serverRotation = rotation;
+        this._serverVelocity = velocity;
         this._owned = false;
     }
 
@@ -197,6 +206,10 @@ class MovementComponent extends Component {
 
     public get owned(): boolean {
         return this._owned;
+    }
+
+    public get driftDirection(): number {
+        return this._driftDirection;
     }
 }
 

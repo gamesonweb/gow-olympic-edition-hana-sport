@@ -3,12 +3,12 @@ import {
     CubeTexture,
     DirectionalLight,
     FreeCamera,
-    HavokPlugin, PBRMaterial,
+    HavokPlugin, Mesh, PBRMaterial,
     PhysicsAggregate,
     PhysicsShapeType,
     SceneLoader,
     SceneOptimizer,
-    SceneOptimizerOptions, TransformNode,
+    SceneOptimizerOptions, StandardMaterial, Texture, TransformNode,
     Vector3
 } from "@babylonjs/core";
 import {Engine} from "@babylonjs/core/Engines/engine";
@@ -26,9 +26,9 @@ import {BattleInitDataMsg} from "../api/pb/game_pb";
 import ApiClient from "../api/client";
 
 export default class WorldScene extends Scene {
-    private static readonly CAMERA_SPEED: number = 7;
-    private static readonly CAMERA_OFFSET: Vector3 = new Vector3(0, 0.8, -5);
-    private static readonly CAMERA_TARGET_OFFSET: Vector3 = new Vector3(0, 0.4, 0);
+    private static readonly CAMERA_SPEED: number = 5;
+    private static readonly CAMERA_OFFSET: Vector3 = new Vector3(0, 0.5, -2.2);
+    private static readonly CAMERA_TARGET_OFFSET: Vector3 = new Vector3(0, 0.3, 0);
 
     private _config: SceneConfig;
 
@@ -111,7 +111,7 @@ export default class WorldScene extends Scene {
         defaultPipeline.imageProcessing.vignetteWeight = 2.5;
         defaultPipeline.imageProcessing.vignetteStretch = 0.5;*/
 
-        /*const skybox = Mesh.CreateBox("skyBox", 5000.0, this);
+        const skybox = Mesh.CreateBox("skyBox", 5000.0, this);
         const skyboxMaterial = new StandardMaterial("skyBox", this);
         skyboxMaterial.backFaceCulling = false;
         skyboxMaterial.reflectionTexture = new CubeTexture("https://assets.babylonjs.com/textures/TropicalSunnyDay", this);
@@ -119,7 +119,7 @@ export default class WorldScene extends Scene {
         skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
         skyboxMaterial.specularColor = new Color3(0, 0, 0);
         skyboxMaterial.disableLighting = true;
-        skybox.material = skyboxMaterial;*/
+        skybox.material = skyboxMaterial;
 
         this._initialized = true;
         //this._optimizer.start();
