@@ -1,16 +1,32 @@
 import "./leaderboard.css";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
 import RankingComponent from "../components/RankingComponent";
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {LeaderboardContext, PageContext} from "../../index";
 import {PageType} from "../../PageType";
 
 function Leaderboard() {
     const {rankings} = useContext(LeaderboardContext);
+    const [data, setData] = useState(rankings[0]);
+    const [index, setIndex] = useState(0);
     const {setPage} = useContext(PageContext);
     const back = () => {
         setPage(PageType.MainMenu);
     }
+
+    const previous = () => {
+        console.log("Previous clicked");
+        const newIndex = (index - 1 + rankings.length) % rankings.length;
+        setIndex(newIndex);
+        setData(rankings[newIndex]);
+    };
+
+    const next = () => {
+        console.log("Next clicked");
+        const newIndex = (index + 1) % rankings.length;
+        setIndex(newIndex);
+        setData(rankings[newIndex]);
+    };
 
     return (
         <>
@@ -25,12 +41,21 @@ function Leaderboard() {
                     </div>
                     <div className='l-ranks'>
                         {
-                            rankings.map((rank: any, index: number) => {
+                            data.ranks.map((rank: any, index: number) => {
                                 return (
                                     <RankingComponent key={index} rank={rank.rank} name={rank.name} time={rank.time}/>
                                 );
                             })
                         }
+                    </div>
+                    <div className="l-nav">
+                        <button onClick={previous}>
+                            Previous
+                        </button>
+                        <p>{data.mapName}</p>
+                        <button onClick={next}>
+                            Next
+                        </button>
                     </div>
                     <div className='submit'>
                         <button className='l-back' onClick={back}>

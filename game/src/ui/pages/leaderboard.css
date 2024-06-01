@@ -64,3 +64,35 @@
 .l-back:hover {
     background-image: url("~/public/assets/common/GreyButtonBackgroundHover.png") !important;
 }
+
+.l-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    height: 50px;
+    align-items: center;
+    flex-direction: row;
+}
+
+.l-nav > p {
+    margin: 0 10px;
+    padding: 10px;
+    color: #401918;
+    font-size: 20px;
+}
+
+.l-nav > button {
+    margin: 0 10px;
+    text-decoration: none;
+    color: black;
+    background-color: transparent;
+    width: 120px;
+    height: 40px;
+    font-size: 20px;
+    border: none;
+    background-image: url("~/public/assets/common/SimpleButtonBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
