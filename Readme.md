@@ -68,6 +68,8 @@ Le jeu prend en charge les claviers **AZERTY** et **QWERTY**.
 
 - **Classement** : Un classement des meilleurs temps sera disponible pour chaque circuit a la fin de chaque course.
 
+- **Attention** : Vous pouvez ouvrir qu'une seule session à la fois
+
 </br>
 
 Azerty / Qwerty :
