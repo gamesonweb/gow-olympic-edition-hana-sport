@@ -364,7 +364,6 @@ const BabylonScene = () => {
                         ApiClient.instance.addHandler(6, (message: BattleServerEntityUpdateMsg) => {
                             if (currentScene) {
                                 const level = currentScene.level;
-                                const battle = level.battle;
                                 for (const entity of message.getEntitiesList()) {
                                     const gameObject = level.gameObjectManager.getObject(entity.getId());
                                     if (!gameObject) {
@@ -531,6 +530,15 @@ const BabylonScene = () => {
                                             ApiClient.instance.send(finishMsg);
                                         }
                                     }
+
+                                    const objects = currentScene!.level.gameObjectManager.objects;
+                                    for (const [id, object] of objects) {
+                                        const movementComponent = object.findComponent(MovementComponent);
+                                        if (movementComponent) {
+                                            movementComponent.enabled = currentBattleState === BattleState.RACING && finishTime === null;
+                                        }
+                                    }
+
                                     timeSinceLastEntityUpdate += engine.getDeltaTime();
                                     if (timeSinceLastEntityUpdate >= 50) {
                                         timeSinceLastEntityUpdate -= 50;

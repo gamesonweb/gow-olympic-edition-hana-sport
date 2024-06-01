@@ -13,6 +13,7 @@ class MovementComponent extends Component {
     private _speedRate: number = 0;
     private _rotationRate: number = 0;
     private _owned: boolean = true;
+    private _enabled: boolean = true;
 
     private _serverPosition: Vector3 = Vector3.Zero();
     private _serverRotation: Vector3 = Vector3.Zero();
@@ -32,6 +33,9 @@ class MovementComponent extends Component {
     }
 
     public update(t: number): void {
+        if (!this._enabled) {
+            return;
+        }
         if (!this._owned) {
             // lerp over 200ms as
             this._physicsObject.position = Vector3.Lerp(this._physicsObject.position, this._serverPosition, t * 5);
@@ -176,6 +180,10 @@ class MovementComponent extends Component {
 
     public get config(): MovementConfig {
         return this._config;
+    }
+
+    public set enabled(value: boolean) {
+        this._enabled = value;
     }
 }
 
