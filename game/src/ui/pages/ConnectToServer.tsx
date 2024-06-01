@@ -18,15 +18,11 @@ function ConnectToServer() {
         }
         ApiClient.instance.setSessionInfo(page.data.id, page.data.selection.username);
         function connect() {
-            ApiClient.instance.connectAsync('ws://localhost:8080/ws').then(() => {
+            ApiClient.instance.connectAsync('ws://kart-api.atrasis.net:9100/ws').then(() => {
                 page.setPage(PageType.MainMenu);
             }).catch((error) => {
                 console.error(error);
-                /*if (confirm("Failed to connect to server. Please try again.")) {
-                    connect();
-                } else {
-                    connect();
-                }*/
+                setTimeout(connect, 1000);
             });
         }
         connect();
