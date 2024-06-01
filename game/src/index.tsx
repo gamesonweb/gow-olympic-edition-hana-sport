@@ -17,7 +17,15 @@ import "@babylonjs/inspector";
 
 import {Engine} from "@babylonjs/core/Engines/engine";
 import WorldScene from "./scenes/world";
-import {Vector3, WebGPUEngine} from '@babylonjs/core';
+import {
+    DualShockButton,
+    DualShockPad,
+    GamepadManager,
+    GenericPad,
+    Vector3,
+    WebGPUEngine,
+    Xbox360Pad
+} from '@babylonjs/core';
 import ConfigTable from "./logic/config/table";
 import {PageType} from "./PageType";
 import Map from "./ui/pages/Map";
@@ -27,9 +35,16 @@ import ApiClient from "./api/client";
 import {
     BattleClientEntityUpdateMsg,
     BattleClientPlayerFinishMsg,
-    BattleClientReadyMsg, BattleEntity, BattleFinishMsg, BattleHeartbeatMsg,
-    BattleInitDataMsg, BattleServerCheckpointUpdateMsg,
-    BattleServerEntityUpdateMsg, BattleServerPlayerFinishMsg, BattleState, BattleStateUpdateMsg,
+    BattleClientReadyMsg,
+    BattleEntity,
+    BattleFinishMsg,
+    BattleHeartbeatMsg,
+    BattleInitDataMsg,
+    BattleServerCheckpointUpdateMsg,
+    BattleServerEntityUpdateMsg,
+    BattleServerPlayerFinishMsg,
+    BattleState,
+    BattleStateUpdateMsg,
     CompleteMatchmakingMsg,
     LeaveMatchmakingMsg,
     MatchmakingStatusMsg,
@@ -38,6 +53,8 @@ import {
 import MovementComponent from "./logic/gameobject/component/movement";
 import {GameObjectType} from "./logic/gameobject/gameObject";
 import Character from "./logic/gameobject/character";
+import InputManager, {ControllerInput} from "./management/inputmanager";
+import {Vector2} from "@babylonjs/core/Maths/math.vector";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -296,7 +313,7 @@ export const GameContext = createContext({
 
 export const GameProvider = () => {
     const onRespawn = useCallback(() => {
-        console.log('Respawn')
+        InputManager.onKeyDown('m')
     }, []);
 
     return (
@@ -330,6 +347,48 @@ const BabylonScene = () => {
                         }
 
                         engineRef.current = engine;
+
+                        /*const gamePadManager = new GamepadManager();
+                        gamePadManager.onGamepadConnectedObservable.add((gamepad) => {
+                            console.log('Gamepad connected', gamepad);
+                            InputManager.clearControllerInput();
+                            if (gamepad instanceof Xbox360Pad) {
+
+                            } else if (gamepad instanceof GenericPad) {
+                                const buttonControllerInputMap = {
+                                    [DualShockButton.Cross]: ControllerInput.A,
+                                    [DualShockButton.Circle]: ControllerInput.B,
+                                    [DualShockButton.Triangle]: ControllerInput.C,
+                                    [DualShockButton.Square]: ControllerInput.D,
+                                    [DualShockButton.L1]: ControllerInput.L1,
+                                    [DualShockButton.R1]: ControllerInput.L1,
+                                }
+                                gamepad.onleftstickchanged((values) => {
+                                    console.log('Left stick', values);
+                                })
+                                gamepad.onrightstickchanged((values) => {
+                                    console.log('Right stick', values);
+                                })
+                                gamepad.onbuttondown((button) => {
+                                    const controllerInput = buttonControllerInputMap[button];
+                                    if (controllerInput !== undefined) {
+                                        InputManager.setControllerInput(controllerInput, 1);
+                                    }
+                                    console.log('Button down', button);
+                                })
+                                gamepad.onbuttonup((button) => {
+                                    const controllerInput = buttonControllerInputMap[button];
+                                    if (controllerInput !== undefined) {
+                                        InputManager.setControllerInput(controllerInput, 0);
+                                    }
+                                    console.log('Button up', button);
+                                })
+                            }
+                        });
+                        gamePadManager.onGamepadDisconnectedObservable.add((gamepad) => {
+                            console.log('Gamepad disconnected', gamepad);
+                            InputManager.clearControllerInput();
+                        });*/
 
                         let currentScene: WorldScene | null = null;
                         let currentTime = 0;

@@ -58,8 +58,9 @@ func (b *BattleService) HandleMessage(client *Client, msg pb.Msg) {
 
 func (b *BattleService) OnClientDisconnect(client *Client) {
 	b.mu.Lock()
-	defer b.mu.Unlock()
 	battle, ok := b.instancesByClientId[client.Id()]
+	b.mu.Unlock()
+
 	if !ok {
 		return
 	}
@@ -128,11 +129,12 @@ func (b *BattleInstance) AddClient(client *Client) {
 			break
 		}
 	}
+	b.mu.Unlock()
+
 	if !added {
 		log.Println("Player not found in battle instance")
 		return
 	}
-	b.mu.Unlock()
 
 	players := make([]*pb.BattleInitDataMsg_Player, 0, len(b.players))
 	for _, player := range b.players {
@@ -148,13 +150,13 @@ func (b *BattleInstance) AddClient(client *Client) {
 
 func (b *BattleInstance) RemoveClient(client *Client) {
 	b.mu.Lock()
+	defer b.mu.Unlock()
 	for i, c := range b.players {
 		if c.Client == client {
 			b.players[i].Client = nil
 			break
 		}
 	}
-	b.mu.Unlock()
 }
 
 func (b *BattleInstance) Update() {

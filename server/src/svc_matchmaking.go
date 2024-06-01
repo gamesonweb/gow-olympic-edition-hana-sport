@@ -75,14 +75,13 @@ func (m *MatchmakingService) HandleMessage(client *Client, msg pb.Msg) {
 		m.AddClient(client, msg.CharacterConfigId, msg.MapConfigId)
 	case *pb.CompleteMatchmakingMsg:
 		m.mu.Lock()
+		defer m.mu.Unlock()
 		for _, q := range m.Queue {
 			if q.HasClient(client) {
 				q.StartMatch()
-				m.mu.Unlock()
-				return
+				break
 			}
 		}
-		m.mu.Unlock()
 	case *pb.LeaveMatchmakingMsg:
 		m.RemoveClient(client)
 	default:
