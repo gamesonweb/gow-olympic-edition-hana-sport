@@ -69,7 +69,7 @@ export default class WorldScene extends Scene {
 
         this.environmentTexture = new CubeTexture("https://assets.babylonjs.com/environments/environmentSpecular.env", this);
 
-        await this.debugLayer.show();
+        // await this.debugLayer.show();
 
         this.blockMaterialDirtyMechanism = true;
 

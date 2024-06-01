@@ -30,6 +30,11 @@
   border: 5px solid black;
 }
 
+.v-content-preview > canvas {
+  height: calc(100% - 10px);
+  width: calc(100% - 10px);
+}
+
 .v-content-preview > img {
   height: calc(100% - 10px);
   width: calc(100% - 10px);

@@ -4,6 +4,7 @@ export default interface MovementConfig {
     deceleration: number;
     brake: number;
     rotationSpeed: number;
+    mass: number;
     collider: {
         x: number;
         y: number;

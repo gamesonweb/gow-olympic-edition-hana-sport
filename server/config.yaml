@@ -1,5 +1,9 @@
 characters:
   - 1
+  - 2
+  - 3
+  - 4
+  - 5
 maps:
   - 1
   - 2
@@ -7,3 +11,6 @@ matchmaking:
   maxPlayers: 5
 battle:
   tickInterval: 50ms
+leaderboard:
+  redisEndpoint: "localhost:6379"
+  size: 10

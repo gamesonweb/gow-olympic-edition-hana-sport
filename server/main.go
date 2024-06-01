@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"github.com/gorilla/websocket"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	kartserver "server/src"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -75,6 +77,37 @@ func main() {
 		connectedClients[idString] = client
 
 		client.Run()
+	})
+	http.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
+		mapConfigIdString := r.URL.Query().Get("map")
+		if mapConfigIdString == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		mapConfigId, err := strconv.ParseInt(mapConfigIdString, 10, 32)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		entries, err := kartserver.Context.LeaderboardService.GetTopScores(uint32(mapConfigId))
+		if err != nil {
+			log.Printf("failed to get top scores: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		// CORS
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Content-Range")
+		// return as json
+		w.Header().Set("Content-Type", "application/json")
+		if json, err := json.Marshal(entries); err == nil {
+			w.Write(json)
+		} else {
+			log.Printf("failed to marshal json: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	})
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

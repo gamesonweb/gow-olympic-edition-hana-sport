@@ -56,6 +56,7 @@ import Character from "./logic/gameobject/character";
 import InputManager, {ControllerInput} from "./management/inputmanager";
 import {Vector2} from "@babylonjs/core/Maths/math.vector";
 import Leaderboard from './ui/pages/Leaderboard';
+import PlatformUtil from "./logic/util/platformUtil";
 
 const ChangePage = (pageType: PageType) => {
     switch (pageType) {
@@ -108,7 +109,7 @@ export const PageContext = createContext({
         vehicles: [{
             id: 0,
             name: 'name',
-            image: 'image',
+            model: 'model',
             speed: 0,
             acceleration: 0,
             brake: 0,
@@ -142,16 +143,16 @@ export const PageContext = createContext({
 })
 
 const gameData = {
-    vehicles: [
-        {
-            id: 1,
-            name: 'Boggy',
-            image: './assets/vehicles/Vehicle0.png',
-            speed: 5,
-            acceleration: 2.5,
-            brake: 2,
+    vehicles: ConfigTable.characters.map((character) => {
+        return {
+            id: character.id,
+            name: character.name,
+            model: character.render.model,
+            speed: character.movement.speed,
+            acceleration: character.movement.acceleration,
+            brake: character.movement.brake,
         }
-    ],
+    }),
     game: {
         position: 1,
         currentLap: 1,
@@ -357,6 +358,8 @@ const BabylonScene = () => {
         const canvasRef = useRef<HTMLCanvasElement>(null);
         const engineRef = useRef<any>(null);
 
+
+
         useEffect(() => {
                 const initBabylon = async () => {
                     try {
@@ -367,13 +370,16 @@ const BabylonScene = () => {
                         let engine: Engine | WebGPUEngine;
 
                         const webGPUSupported = await WebGPUEngine.IsSupportedAsync;
-                        if (webGPUSupported) {
+                        if (webGPUSupported && !PlatformUtil.isIOS()) {
                             engine = new WebGPUEngine(view);
                             await engine.initAsync();
                         } else {
                             engine = new Engine(view, true);
                         }
 
+                        if (PlatformUtil.isMobile()) {
+                            engine.enterFullscreen(true);
+                        }
                         engineRef.current = engine;
 
                         /*const gamePadManager = new GamepadManager();

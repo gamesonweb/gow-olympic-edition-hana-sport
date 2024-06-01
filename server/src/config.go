@@ -11,4 +11,8 @@ type Config struct {
 	Battle struct {
 		TickInterval time.Duration `mapstructure:"tickInterval"`
 	} `mapstructure:"battle"`
+	Leaderboard struct {
+		RedisEndpoint string `mapstructure:"redisEndpoint"`
+		Size          int    `mapstructure:"size"`
+	} `mapstructure:"leaderboard"`
 }

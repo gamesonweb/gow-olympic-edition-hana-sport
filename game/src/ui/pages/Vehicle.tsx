@@ -1,4 +1,4 @@
-﻿import React, {useContext, useRef, useState} from 'react';
+﻿import React, {useContext, useEffect, useRef, useState} from 'react';
 import "./vehicle.css";
 import HanaGamesLogo from "../assets/common/HanaGames.png";
 import TitleBackground from "../assets/mainmenu/TitleBackground.png";
@@ -6,6 +6,9 @@ import {PageContext, State} from "../../index";
 import {PageType} from "../../PageType";
 import ApiClient from "../../api/client";
 import {JoinMatchmakingMsg} from "../../api/pb/game_pb";
+import {Engine} from "@babylonjs/core/Engines/engine";
+import {Scene} from "@babylonjs/core/scene";
+import {ArcRotateCamera, AutoRotationBehavior, Matrix, SceneLoader, Vector3} from "@babylonjs/core";
 
 function Vehicle() {
     const page = useContext(PageContext);
@@ -49,6 +52,46 @@ function Vehicle() {
         console.log("Back clicked");
         page.setPage(PageType.Map);
     };
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        const engine = new Engine(canvasRef.current, true);
+        const scene = new Scene(engine);
+
+        const model = page.data.vehicles[index].model;
+
+        scene.createDefaultEnvironment();
+        scene.createDefaultSkybox();
+        scene.createDefaultLight(true);
+
+        const arcRotateCamera = new ArcRotateCamera("Camera", -Math.PI / 4, Math.PI / 3, 5, new Vector3(0, 0, 0), scene);
+
+        // load glb model
+        SceneLoader.ImportMeshAsync(null, "assets/" + model, null, scene).then((result) => {
+            const root = result.meshes[0];
+            root.scaling = new Vector3(1, 1, 1);
+            root.position = new Vector3(0, 0, 0);
+
+            arcRotateCamera.setTarget(root.getBoundingInfo().boundingBox.center.clone().add(new Vector3(0, 0.25, 0)));
+            arcRotateCamera.attachControl(canvasRef.current, true);
+
+            // rotate the model
+            scene.registerBeforeRender(() => {
+                const deltaTime = engine.getDeltaTime() / 1000;
+                const rotation = root.rotation;
+                rotation.y += 1.5 * deltaTime * Math.PI / 4;
+                root.rotation = rotation;
+            });
+        });
+
+        engine.runRenderLoop(() => {
+            scene.render();
+        });
+        return () => {
+            scene.dispose();
+            engine.dispose();
+        };
+    }, [index, page.data.vehicles]);
 
     return (
         <>
@@ -63,10 +106,7 @@ function Vehicle() {
                     </div>
                     <div className='v-content'>
                         <div className='v-content-preview'>
-                            <img
-                                src={stats.image}
-                                alt='Vehicule 1'
-                            />
+                            <canvas ref={canvasRef} />
                         </div>
                         <div className='v-content-info'>
                             <h2>{stats.name}</h2>

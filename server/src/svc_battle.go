@@ -291,6 +291,17 @@ func (b *BattleInstance) updateState() {
 			b.broadcast(&pb.BattleFinishMsg{
 				Players: playerFinishResult,
 			})
+			go func() {
+				for _, player := range b.players {
+					if err := Context.LeaderboardService.AddScore(b.mapConfigId, LeaderboardEntry{
+						Id:    player.Id,
+						Name:  player.Name,
+						Score: float64(player.FinishTotalTime),
+					}); err != nil {
+						log.Println("Failed to add score to leaderboard: ", err)
+					}
+				}
+			}()
 		}
 	}
 }

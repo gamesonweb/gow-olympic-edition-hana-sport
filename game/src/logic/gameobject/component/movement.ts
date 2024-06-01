@@ -20,6 +20,8 @@ class MovementComponent extends Component {
     private _serverRotation: Vector3 = Vector3.Zero();
     private _serverVelocity: Vector3 = Vector3.Zero();
 
+    private _collisionImpulseTime: number = 0;
+
     public input = new MovementInput();
 
     constructor(parent: GameObject, config: MovementConfig = null) {
@@ -38,17 +40,22 @@ class MovementComponent extends Component {
         if (!this._enabled) {
             return;
         }
+        this._collisionImpulseTime -= t;
         if (!this._owned) {
-            // lerp over 200ms as
-            this._physicsObject.position = Vector3.Lerp(this._physicsObject.position, this._serverPosition, t * 5);
-            this._physicsObject.rotationQuaternion = Quaternion.Slerp(this._physicsObject.rotationQuaternion, this._serverRotation.toQuaternion(), t * 5);
-            // reset linear and angular velocity
-            this._physicsAggregate.body.setLinearVelocity(Vector3.Zero());
-            this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
-            this._physicsAggregate.body.setLinearVelocity(this._serverVelocity);
-            this._serverVelocity.x = MovementComponent.lerp(this._serverVelocity.x, 0, t);
-            this._serverVelocity.y = MovementComponent.lerp(this._serverVelocity.y, 0, t);
-            this._serverVelocity.z = MovementComponent.lerp(this._serverVelocity.z, 0, t);
+            const distance = Vector3.Distance(this._physicsObject.position, this._serverPosition);
+            if (distance < 2) {
+                this._physicsObject.position = Vector3.Lerp(this._physicsObject.position, this._serverPosition, t * 5);
+                this._physicsObject.rotationQuaternion = Quaternion.Slerp(this._physicsObject.rotationQuaternion, this._serverRotation.toQuaternion(), t * 5);
+                this._physicsAggregate.body.setLinearVelocity(Vector3.Lerp(this._physicsAggregate.body.getLinearVelocity(), this._serverVelocity, t / 10));
+                this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
+                this._serverVelocity = Vector3.Lerp(this._serverVelocity, Vector3.Zero(), t);
+            } else {
+                this._physicsObject.position = this._serverPosition;
+                this._physicsObject.rotationQuaternion = this._serverRotation.toQuaternion();
+                this._physicsAggregate.body.setLinearVelocity(this._serverVelocity);
+                this._physicsAggregate.body.setAngularVelocity(Vector3.Zero());
+                this._serverVelocity = Vector3.Zero();
+            }
         }
         this.parent.position = this._physicsObject.position;
         this.parent.rotation = this._physicsObject.rotationQuaternion.toEulerAngles();
@@ -150,8 +157,29 @@ class MovementComponent extends Component {
 
     public resyncPhysics(teleportToGround = true): void {
         if (!this._physicsAggregate) {
-            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: 1, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0, friction: 0.05 });
-            this._physicsAggregate.body.disablePreStep = !this._owned;
+            this._physicsAggregate = new PhysicsAggregate(this._physicsObject, PhysicsShapeType.BOX, { mass: 1, extents: new Vector3(this._config.collider.x, this._config.collider.y, this._config.collider.z), restitution: 0.5, friction: 0.05 });
+            this._physicsAggregate.body.disablePreStep = false;
+
+            /*const body = this._physicsAggregate.body;
+            //@ts-ignore
+            body.parent = this;
+            body.setCollisionCallbackEnabled(true);
+            body.getCollisionObservable().add((collider) => {
+                const otherCollider = collider.collidedAgainst;
+                //@ts-ignore
+                if (!otherCollider.parent) {
+                    return;
+                }
+                //@ts-ignore
+                const otherMovementComponent = otherCollider.parent as MovementComponent;
+                if (otherMovementComponent !== this) {
+                    console.log("Collision with " + otherMovementComponent.parent.id);
+                    const direction = this.parent.position.subtract(otherMovementComponent.parent.position).normalize();
+                    const reflection = Vector3.Reflect(direction, collider.normal);
+                    reflection.y = 0;
+                    this._applyCollisionImpulse(reflection.scale(-5), collider.point);
+                }
+            });*/
         }
         this._physicsObject.position = this.parent.position.clone();
         this._physicsObject.rotationQuaternion = this.parent.rotation.toQuaternion();
@@ -210,6 +238,14 @@ class MovementComponent extends Component {
 
     public get driftDirection(): number {
         return this._driftDirection;
+    }
+
+    private _applyCollisionImpulse(force: Vector3, point: Vector3) {
+        if (this._collisionImpulseTime > 0) {
+            return;
+        }
+        this._physicsAggregate.body.applyImpulse(force, point);
+        this._collisionImpulseTime = 0.5;
     }
 }
 
