@@ -94,5 +94,9 @@ Nous avons opté pour BabylonJS 7.9.0 et React pour notre projet, combinant ains
 Nous avons entamé le projet BabylonJS le 30 mai. En tant que fondateurs d'un studio de jeux vidéo (Hana Games), nous consacrons tout notre temps libre au développement de Gang Stars, notre jeu mobile. Pour cette dernière édition, après deux participations, nous avons décidé de créer un jeu dans les délais impartis.
 Nous utilisons Unity comme un intermédiaire dans notre processus de développement. Nous concevons nos mondes et éléments de jeu dans Unity, puis nous les exportons vers BabylonJS à l'aide de l'outil "UnityGLTF" de KhronosGroup. Les checkpoints, les modèles et les points de spawn sont exportés depuis Unity via un script C# [kart_map1.json](https://github.com/gamesonweb/gow-olympic-edition-hana-sport/blob/6691c28f529e84482cdb3b3241d158cf63bac972/game/src/assets/levels/kart_map1.json). Cette approche nous permet de bénéficier des avantages de Unity en matière de conception et de flux de travail, tout en exploitant les fonctionnalités et les performances de BabylonJS pour le rendu 3D dans notre jeu. Notre structure de code suit également celle d'Unity, avec l'utilisation de composants dans des gameobjects. Cela facilite la transition et la collaboration entre les membres de l'équipe, car nous utilisons une méthode familière et efficace pour organiser notre code et nos ressources.
 
+# IA
+- [Google AI Test Kitchen](https://aitestkitchen.withgoogle.com/fr) pour musiques et sons
+- [Midjourney](https://midjourney.com/) pour les fonds d'écran
+
 [LinkedIn](https://www.linkedin.com/company/hanagames/)
 [X](https://x.com/HanaGamesStudio)
