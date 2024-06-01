@@ -98,5 +98,13 @@ Nous utilisons Unity comme un intermédiaire dans notre processus de développem
 - [Google AI Test Kitchen](https://aitestkitchen.withgoogle.com/fr) pour musiques et sons
 - [Midjourney](https://midjourney.com/) pour les fonds d'écran
 
+# Capture d'écran
+![Capture](./media/image1.png)
+![Capture](./media/image2.png)
+![Capture](./media/image3.png)
+![Capture](./media/image4.png)
+![Capture](./media/image5.png)
+![Capture](./media/image6.png)
+
 [LinkedIn](https://www.linkedin.com/company/hanagames/)
 [X](https://x.com/HanaGamesStudio)
