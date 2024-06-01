@@ -173,6 +173,10 @@ class MovementComponent extends Component {
         }
         return Vector3.Zero();
     }
+
+    public get config(): MovementConfig {
+        return this._config;
+    }
 }
 
 class MovementInput {

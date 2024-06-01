@@ -2,7 +2,6 @@ import ISceneComponent from "./interface";
 import {Sound} from "@babylonjs/core";
 import AudioConfig from "../../logic/config/audio";
 import Level from "../../logic/level/level";
-import {GameObjectType} from "../../logic/gameobject/gameObject";
 import ConfigTable from "../../logic/config/table";
 import Scene from "../../scenes/scene";
 

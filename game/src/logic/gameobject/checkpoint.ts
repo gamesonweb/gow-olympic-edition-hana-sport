@@ -48,10 +48,11 @@ export class Checkpoint extends GameObject {
 
     public isInside(position: Vector3, rotation: Vector3, collisionBox: { x: number, y: number, z: number }): boolean {
         const boundingBox = [
-            new Vector3(-collisionBox.x / 2, 0, -collisionBox.z / 2),
-            new Vector3(-collisionBox.x / 2, 0, collisionBox.z / 2),
-            new Vector3(collisionBox.x / 2, 0, collisionBox.z / 2),
-            new Vector3(collisionBox.x / 2, 0, -collisionBox.z / 2)
+            new Vector3(-collisionBox.x, 0, -collisionBox.z),
+            new Vector3(-collisionBox.x, 0, collisionBox.z),
+            new Vector3(collisionBox.x, 0, collisionBox.z),
+            new Vector3(collisionBox.x, 0, -collisionBox.z),
+            new Vector3(0, 0, 0)
         ];
         for (let i = 0; i < boundingBox.length; i++) {
             boundingBox[i].rotateByQuaternionAroundPointToRef(rotation.toQuaternion(), Vector3.Zero(), boundingBox[i]);

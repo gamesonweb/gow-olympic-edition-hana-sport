@@ -22,7 +22,7 @@ abstract class Component {
 enum ComponentType {
     Movement = 0,
     Render = 1,
-    Animation = 2
+    Audio = 2,
 }
 
 export default Component;

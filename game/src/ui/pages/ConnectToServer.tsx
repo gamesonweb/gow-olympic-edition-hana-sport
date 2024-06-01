@@ -18,7 +18,7 @@ function ConnectToServer() {
         }
         ApiClient.instance.setSessionInfo(page.data.id, page.data.selection.username);
         function connect() {
-            ApiClient.instance.connectAsync('ws://kart-api.atrasis.net:9100/ws').then(() => {
+            ApiClient.instance.connectAsync('wss://kart-api.atrasis.net/ws').then(() => {
                 page.setPage(PageType.MainMenu);
             }).catch((error) => {
                 console.error(error);

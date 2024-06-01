@@ -1,5 +1,5 @@
 ﻿import "./ranking.css";
-import Utils from "../Utils.ts";
+import Utils from "../Utils";
 
 function RankingComponent(props: any) {
     return (

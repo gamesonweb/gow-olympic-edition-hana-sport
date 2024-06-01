@@ -333,7 +333,7 @@ const BabylonScene = () => {
                                     })
                                     break;
                                 case BattleState.RACING:
-                                    setPage(PageType.Game);
+                                    setPage(finishTime ? PageType.Ranking : PageType.Game);
                                     data.game.countdown = 0;
                                     data.game.time = timeToString(finishTime || currentTime);
                                     setData({
@@ -425,10 +425,17 @@ const BabylonScene = () => {
                                             timeRaw: message.getTotalTime()
                                         }
                                         // rebuild rankings
-                                        rankings.sort((a, b) => b.timeRaw - a.timeRaw);
-                                        rankings.forEach((ranking, index) => {
-                                            ranking.rank = index + 1;
+                                        const newRankings = rankings.sort((a, b) => a.timeRaw - b.timeRaw).map((ranking, index) => {
+                                            return {
+                                                rank: index + 1,
+                                                id: ranking.id,
+                                                name: ranking.name,
+                                                time: ranking.time,
+                                                timeRaw: ranking.timeRaw
+                                            }
                                         });
+                                        rankings.splice(0, rankings.length, ...newRankings);
+
                                         setRankings(rankings);
                                     } else {
                                         console.error('Ranking not found', message.getPlayerId(), rankings);
@@ -472,6 +479,10 @@ const BabylonScene = () => {
                         });
 
                         ApiClient.instance.addHandler(4, (message: BattleInitDataMsg) => {
+                            finishTime = null;
+                            currentBattleState = BattleState.WAITING_FOR_PLAYERS;
+                            currentTime = 0;
+
                             const sceneConfig = ConfigTable.getScene(message.getSceneConfigId());
                             if (!sceneConfig) {
                                 console.error('Invalid scene config id', message.getSceneConfigId());

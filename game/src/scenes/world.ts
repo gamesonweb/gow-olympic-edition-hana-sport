@@ -22,12 +22,11 @@ import {TargetCamera} from "@babylonjs/core/Cameras/targetCamera";
 import MeshProvider from "../management/meshprovider";
 import AudioComponent from "../management/component/audio";
 import HavokPhysics from "@babylonjs/havok";
-import ConfigTable from "../logic/config/table";
 import {BattleInitDataMsg} from "../api/pb/game_pb";
 import ApiClient from "../api/client";
 
 export default class WorldScene extends Scene {
-    private static readonly CAMERA_SPEED: number = 8;
+    private static readonly CAMERA_SPEED: number = 7;
     private static readonly CAMERA_OFFSET: Vector3 = new Vector3(0, 0.8, -5);
     private static readonly CAMERA_TARGET_OFFSET: Vector3 = new Vector3(0, 0.4, 0);
 
@@ -70,7 +69,7 @@ export default class WorldScene extends Scene {
 
         this.environmentTexture = new CubeTexture("https://assets.babylonjs.com/environments/environmentSpecular.env", this);
 
-        await this.debugLayer.show();
+        // await this.debugLayer.show();
 
         this.blockMaterialDirtyMechanism = true;
 

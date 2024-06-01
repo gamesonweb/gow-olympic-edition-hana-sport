@@ -2,7 +2,6 @@ import { AbstractMesh, Vector3 } from "@babylonjs/core";
 import MeshProvider, { MeshAsyncHandle } from "../../../management/meshprovider";
 import RenderConfig from "../../config/component/render";
 import GameObject from "../gameObject";
-import AnimationComponent from "./animation";
 import Component, { ComponentType } from "./component";
 import {EventListT} from "../../util/eventList";
 
@@ -37,11 +36,6 @@ export default class RenderComponent extends Component {
             // apply scale
             this._mesh.scaling = new Vector3(config.scale, config.scale, config.scale).multiply(this.parent.scale);
             this._offset = new Vector3(config.offset.x, config.offset.y, config.offset.z);
-
-            const animationComponent = this.parent.findComponent(AnimationComponent);
-            if (animationComponent) {
-                animationComponent.setGroups(result.animationGroups);
-            }
 
             this.updateRender();
             this.onLoaded.trigger(this._mesh);
