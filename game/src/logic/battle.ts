@@ -59,10 +59,11 @@ export class Battle {
     public onCheckpointReached(playerIndex: number, checkpointId: number): void {
         const currentCheckpointIndex = this._playerCurrentTurnCheckpointIndex[playerIndex];
         if (checkpointId === this._level.metadata.checkpoints[currentCheckpointIndex]) {
+            console.error("Player " + playerIndex + " reached the same checkpoint again (index " + currentCheckpointIndex + ")");
             return;
         }
         let validatedCheckpointIndex = -1;
-        for (let i = 0; i < this._playerCurrentTurnCheckpointIndex.length; i++) {
+        for (let i = 0; i < this._level.metadata.checkpoints.length; i++) {
             const nextCheckpointIndex = (currentCheckpointIndex + 1) % this._level.metadata.checkpoints.length;
             const nextCheckpointId = this._level.metadata.checkpoints[nextCheckpointIndex];
             const checkpointObject = this._level.gameObjectManager.getObject(nextCheckpointId) as Checkpoint;
@@ -89,21 +90,23 @@ export class Battle {
         console.log("Player " + playerIndex + " reached checkpoint " + checkpointId + " (validated index " + validatedCheckpointIndex + ")");
     }
     public serverSetPlayerCurrentTurn(playerIndex: number, currentTurn: number, currentTurnCheckpointIndex: number): void {
+        console.log("Server set player " + playerIndex + " current turn to " + currentTurn + " at checkpoint " + currentTurnCheckpointIndex);
         this._playerCurrentTurn[playerIndex] = currentTurn;
         this._playerCurrentTurnCheckpointIndex[playerIndex] = currentTurnCheckpointIndex;
     }
 
     public update(t: number): void {
-        let i = 0;
         for (const character of this._playerCharacter) {
             const movementComponent = character.findComponent(MovementComponent);
-            if (!movementComponent) {
+            if (!movementComponent || !movementComponent.owned) {
                 // character destroyed
                 continue;
             }
 
-            const currentCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[this._playerCurrentTurnCheckpointIndex[i]]) as Checkpoint;
-            const nextCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[(this._playerCurrentTurnCheckpointIndex[i] + 1) % this._level.metadata.checkpoints.length]) as Checkpoint;
+            const playerIndex = character.playerIndex;
+            const currentCheckpointIndex = this._playerCurrentTurnCheckpointIndex[playerIndex];
+            const currentCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[currentCheckpointIndex]) as Checkpoint;
+            const nextCheckpoint = this._level.gameObjectManager.getObject(this._level.metadata.checkpoints[(currentCheckpointIndex + 1) % this._level.metadata.checkpoints.length]) as Checkpoint;
             const checkpointRay = [
                 currentCheckpoint.position,
                 nextCheckpoint.position
@@ -116,7 +119,6 @@ export class Battle {
                 character.rotation = currentCheckpoint.rotation;
                 character.getComponent(MovementComponent).resyncPhysics();
             }
-            i++;
         }
     }
 

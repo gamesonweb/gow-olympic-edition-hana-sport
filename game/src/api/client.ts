@@ -23,7 +23,7 @@ export default class ApiClient {
 
     public send(message: Message): void {
         if (this._connected) {
-            console.log('[ApiClient] Send message: ' + message.constructor.name);
+            //console.log('[ApiClient] Send message: ' + message.constructor.name);
             const id = GetMessageID(message);
             const data = message.serializeBinary();
             const buffer = new Uint8Array(data.length + 1);
@@ -64,7 +64,7 @@ export default class ApiClient {
                     const data = buffer.slice(1);
                     const message = Create(id, data);
                     if (message) {
-                        console.log('[ApiClient] Received message: ' + message.constructor.name);
+                        //console.log('[ApiClient] Received message: ' + message.constructor.name);
                         const handler = this._handlers.get(id);
                         if (handler) {
                             handler(message);

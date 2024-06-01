@@ -391,7 +391,6 @@ const BabylonScene = () => {
                                     const rotation = new Vector3(pbRotation.getX(), pbRotation.getY(), pbRotation.getZ());
                                     const velocity = new Vector3(pbVelocity.getX(), pbVelocity.getY(), pbVelocity.getZ());
                                     movementComponent.onServerUpdate(position, rotation, velocity);
-                                    console.log('Entity updated', entity.getId(), position, rotation, velocity);
                                 }
                             }
                         });
