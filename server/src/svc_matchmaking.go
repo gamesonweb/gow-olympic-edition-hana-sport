@@ -2,13 +2,12 @@ package kartserver
 
 import (
 	"log"
-	"math/rand"
 	"server/pb"
 	"sync"
 )
 
 type MatchmakingService struct {
-	Queue          []*clientInfo
+	Queue          map[uint32]*queue
 	MaxPlayers     int
 	AvailableMaps  []uint32
 	AvailableChars []uint32
@@ -20,31 +19,32 @@ func NewMatchmakingService(maxPlayers int, mapConfigs []uint32, charConfigs []ui
 		MaxPlayers:     maxPlayers,
 		AvailableMaps:  mapConfigs,
 		AvailableChars: charConfigs,
+		Queue:          make(map[uint32]*queue),
 	}
 }
 
-func (m *MatchmakingService) AddClient(client *Client, characterConfigId uint32) {
+func (m *MatchmakingService) AddClient(client *Client, characterConfigId uint32, mapConfigId uint32) {
 	m.RemoveClient(client)
 	m.mu.Lock()
-	m.Queue = append(m.Queue, &clientInfo{client: client, characterConfigId: characterConfigId})
-	m.updateQueue()
-	m.mu.Unlock()
+	defer m.mu.Unlock()
+	mapQueue, ok := m.Queue[mapConfigId]
+	if !ok {
+		mapQueue = newQueue(mapConfigId, m.MaxPlayers)
+		m.Queue[mapConfigId] = mapQueue
+	}
+	mapQueue.Add(client, characterConfigId)
+	mapQueue.Update()
 }
 
 func (m *MatchmakingService) RemoveClient(client *Client) {
-	hasRemoved := false
 	m.mu.Lock()
-	for i, c := range m.Queue {
-		if c.client.Id() == client.Id() {
-			m.Queue = append(m.Queue[:i], m.Queue[i+1:]...)
-			hasRemoved = true
+	defer m.mu.Unlock()
+	for _, q := range m.Queue {
+		if q.Remove(client) {
+			q.Update()
 			break
 		}
 	}
-	if hasRemoved {
-		m.updateQueue()
-	}
-	m.mu.Unlock()
 }
 
 func (m *MatchmakingService) HandleMessage(client *Client, msg pb.Msg) {
@@ -61,11 +61,26 @@ func (m *MatchmakingService) HandleMessage(client *Client, msg pb.Msg) {
 			log.Println("Character not available: ", msg.CharacterConfigId)
 			return
 		}
-		m.AddClient(client, msg.CharacterConfigId)
+		mapIndex := -1
+		for i, mapId := range m.AvailableMaps {
+			if mapId == msg.MapConfigId {
+				mapIndex = i
+				break
+			}
+		}
+		if mapIndex == -1 {
+			log.Println("Map not available: ", msg.MapConfigId)
+			return
+		}
+		m.AddClient(client, msg.CharacterConfigId, msg.MapConfigId)
 	case *pb.CompleteMatchmakingMsg:
 		m.mu.Lock()
-		if len(m.Queue) > 0 {
-			m.startMatch()
+		for _, q := range m.Queue {
+			if q.HasClient(client) {
+				q.StartMatch()
+				m.mu.Unlock()
+				return
+			}
 		}
 		m.mu.Unlock()
 	case *pb.LeaveMatchmakingMsg:
@@ -79,42 +94,85 @@ func (m *MatchmakingService) OnClientDisconnect(client *Client) {
 	m.RemoveClient(client)
 }
 
-func (m *MatchmakingService) updateQueue() {
-	log.Printf("Queue updated: %d", len(m.Queue))
-
-	if len(m.Queue) < m.MaxPlayers {
-		for _, entry := range m.Queue {
-			entry.client.Send(&pb.MatchmakingStatusMsg{
-				PlayersInQueue:  uint32(len(m.Queue)),
-				PlayersRequired: uint32(m.MaxPlayers),
-			})
-		}
-	} else {
-		m.startMatch()
-	}
-}
-
-func (m *MatchmakingService) startMatch() {
-	log.Println("Starting match: ", len(m.Queue))
-	// already locked
-	players := make([]*BattlePlayer, 0)
-	for i := 0; i < len(m.Queue); i++ {
-		players = append(players, &BattlePlayer{
-			BattleInitDataMsg_Player: pb.BattleInitDataMsg_Player{
-				Id:                m.Queue[i].client.Id(),
-				Name:              m.Queue[i].client.Name(),
-				CharacterConfigId: m.Queue[i].characterConfigId,
-			},
-		})
-	}
-	battleId := Context.BattleService.CreateBattle(m.AvailableMaps[rand.Int31n(int32(len(m.AvailableMaps)))], players)
-	for _, client := range m.Queue {
-		Context.BattleService.AttachClientToBattle(client.client, battleId)
-	}
-	m.Queue = m.Queue[:0]
-}
-
 type clientInfo struct {
 	client            *Client
 	characterConfigId uint32
+}
+
+type queue struct {
+	players     []*clientInfo
+	mapConfigId uint32
+	capacity    int
+}
+
+func newQueue(mapConfigId uint32, capacity int) *queue {
+	return &queue{
+		players:     make([]*clientInfo, 0),
+		mapConfigId: mapConfigId,
+		capacity:    capacity,
+	}
+}
+
+func (q *queue) Add(client *Client, characterConfigId uint32) {
+	q.players = append(q.players, &clientInfo{client: client, characterConfigId: characterConfigId})
+}
+
+func (q *queue) Remove(client *Client) bool {
+	for i, c := range q.players {
+		if c.client.Id() == client.Id() {
+			q.players = append(q.players[:i], q.players[i+1:]...)
+			return true
+		}
+	}
+	return false
+}
+
+func (q *queue) HasClient(client *Client) bool {
+	for _, c := range q.players {
+		if c.client.Id() == client.Id() {
+			return true
+		}
+	}
+	return false
+}
+
+func (q *queue) StartMatch() {
+	log.Println("Starting match: ", len(q.players))
+	// already locked
+	players := make([]*BattlePlayer, 0)
+	for i := 0; i < len(q.players); i++ {
+		players = append(players, &BattlePlayer{
+			BattleInitDataMsg_Player: pb.BattleInitDataMsg_Player{
+				Id:                q.players[i].client.Id(),
+				Name:              q.players[i].client.Name(),
+				CharacterConfigId: q.players[i].characterConfigId,
+			},
+		})
+	}
+	battleId := Context.BattleService.CreateBattle(q.mapConfigId, players)
+	for _, client := range q.players {
+		Context.BattleService.AttachClientToBattle(client.client, battleId)
+	}
+	q.players = make([]*clientInfo, 0)
+}
+
+func (q *queue) UpdateStatus() {
+	for _, entry := range q.players {
+		entry.client.Send(&pb.MatchmakingStatusMsg{
+			PlayersInQueue:  uint32(len(q.players)),
+			PlayersRequired: uint32(q.capacity),
+		})
+	}
+}
+
+func (q *queue) IsFull() bool {
+	return len(q.players) >= q.capacity
+}
+
+func (q *queue) Update() {
+	if q.IsFull() {
+		q.StartMatch()
+	} else {
+		q.UpdateStatus()
+	}
 }

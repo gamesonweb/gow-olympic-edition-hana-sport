@@ -32,13 +32,17 @@ function Vehicle() {
         console.log("Submit clicked");
         let data = page.data;
         data.selection.vehicle = index;
-        page.setState(State.Matchmaking);
-        page.setData(data);
         console.log("Vehicle selected: " + index);
+        console.log("Map selected: " + data.selection.map);
+        console.log("Data", data);
         const joinMatchmakingMsg = new JoinMatchmakingMsg();
         joinMatchmakingMsg.setCharacterConfigId(page.data.vehicles[index].id);
+        joinMatchmakingMsg.setMapConfigId(page.data.maps[data.selection.map].id);
         ApiClient.instance.send(joinMatchmakingMsg);
+        page.setData(data);
+        page.setState(State.Matchmaking);
         page.setPage(PageType.Matchmaking);
+
     };
 
     const back = () => {

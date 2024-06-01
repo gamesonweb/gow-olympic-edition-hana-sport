@@ -7,6 +7,7 @@ message JoinMatchmakingMsg {
   option (msg_id) = 1;
 
   uint32 character_config_id = 2;
+  uint32 map_config_id = 3;
 }
 message MatchmakingStatusMsg {
   option (msg_id) = 2;

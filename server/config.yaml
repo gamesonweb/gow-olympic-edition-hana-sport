@@ -2,6 +2,7 @@ characters:
   - 1
 maps:
   - 1
+  - 2
 matchmaking:
   maxPlayers: 5
 battle:

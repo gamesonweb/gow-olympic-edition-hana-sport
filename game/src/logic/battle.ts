@@ -56,6 +56,10 @@ export class Battle {
         return this._playerCurrentTurn[playerIndex];
     }
 
+    public getPlayerCurrentTurnCheckpointIndex(playerIndex: number): number {
+        return this._playerCurrentTurnCheckpointIndex[playerIndex];
+    }
+
     public onCheckpointReached(playerIndex: number, checkpointId: number): void {
         const currentCheckpointIndex = this._playerCurrentTurnCheckpointIndex[playerIndex];
         if (checkpointId === this._level.metadata.checkpoints[currentCheckpointIndex]) {
@@ -114,7 +118,9 @@ export class Battle {
             // get distance of the character from the line formed by the two checkpoints
             const characterPosition = character.position;
             const characterDistanceToCheckpoint = this._distanceFromLine(characterPosition, checkpointRay[0], checkpointRay[1]);
-            if (characterDistanceToCheckpoint.length() > 6 || movementComponent.input.respawn && movementComponent.velocity.length() < 2) {
+            characterDistanceToCheckpoint.x *= 0.6;
+            characterDistanceToCheckpoint.z *= 0.6;
+            if (characterDistanceToCheckpoint.length() > 5 || movementComponent.input.respawn && movementComponent.velocity.length() < 2) {
                 character.position = currentCheckpoint.position;
                 character.rotation = currentCheckpoint.rotation;
                 character.getComponent(MovementComponent).resyncPhysics();
@@ -136,7 +142,6 @@ export class Battle {
         if (dotEnd > 0) {
             return pointToLineEnd;
         }
-        const pointToLine = pointToLineStart.subtract(lineDirection.scale(dotStart));
         return pointToLineStart.subtract(lineDirection.scale(dotStart));
     }
 }

@@ -1,5 +1,6 @@
 import * as configsJson from '../../assets/configs.json';
 import * as KartMap1  from "../../assets/levels/kart_map1.json"
+import * as KartMap2  from "../../assets/levels/kart_map2.json"
 
 import CharacterConfig from './gameobject/character';
 import Globals from './globals';
@@ -11,7 +12,7 @@ export default class ConfigTable {
         return configsJson.characters;
     }
     public static get scenes(): SceneConfig[] {
-        return [KartMap1 as SceneConfig]
+        return [KartMap1 as SceneConfig, KartMap2 as SceneConfig];
     }
     public static get audios(): AudioConfig[] {
         return configsJson.audios;

@@ -8,6 +8,9 @@ export class JoinMatchmakingMsg extends jspb.Message {
   getCharacterConfigId(): number;
   setCharacterConfigId(value: number): void;
 
+  getMapConfigId(): number;
+  setMapConfigId(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): JoinMatchmakingMsg.AsObject;
   static toObject(includeInstance: boolean, msg: JoinMatchmakingMsg): JoinMatchmakingMsg.AsObject;
@@ -21,6 +24,7 @@ export class JoinMatchmakingMsg extends jspb.Message {
 export namespace JoinMatchmakingMsg {
   export type AsObject = {
     characterConfigId: number,
+    mapConfigId: number,
   }
 }
 

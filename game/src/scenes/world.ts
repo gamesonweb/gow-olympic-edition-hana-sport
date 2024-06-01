@@ -1,9 +1,9 @@
 import {
-    AbstractMesh,
+    AbstractMesh, Color3,
     CubeTexture,
     DirectionalLight,
     FreeCamera,
-    HavokPlugin,
+    HavokPlugin, PBRMaterial,
     PhysicsAggregate,
     PhysicsShapeType,
     SceneLoader,
@@ -69,7 +69,7 @@ export default class WorldScene extends Scene {
 
         this.environmentTexture = new CubeTexture("https://assets.babylonjs.com/environments/environmentSpecular.env", this);
 
-        // await this.debugLayer.show();
+        await this.debugLayer.show();
 
         this.blockMaterialDirtyMechanism = true;
 
@@ -178,13 +178,17 @@ export default class WorldScene extends Scene {
         root.rotation = rotation;
         root.scaling = scaling;
 
-        for (const child of model.meshes) {
-            this._optimizeMesh(child);
+        const groundMeshes = model.meshes.filter(m => m.name === 'Ground' || m.name.startsWith("Ground"));
+        for (const groundMesh of groundMeshes) {
+            new PhysicsAggregate(groundMesh, PhysicsShapeType.MESH, {mass: 0, friction: 1, restitution: 0.1});
+            if (this._config.id === 2) {
+                const material = groundMesh.material as PBRMaterial;
+                material.albedoColor = new Color3(0.5, 0.5, 0.5);
+            }
         }
 
-        const groundMesh = model.meshes.find(m => m.name === 'Ground');
-        if (groundMesh) {
-            new PhysicsAggregate(groundMesh, PhysicsShapeType.BOX, {mass: 0, friction: 1, restitution: 0.1});
+        for (const child of model.meshes) {
+            this._optimizeMesh(child);
         }
 
         const propsTransform = model.transformNodes.find(t => t.name.endsWith('Props'));

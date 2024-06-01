@@ -11,6 +11,7 @@ export default class PlayerInput implements ISceneComponent {
     public static KEY_LEFT: string = "q";
     public static KEY_RIGHT: string = "d";
     public static KEY_RESPAWN: string = "m";
+    public static KEY_DRIFT: string = "shift";
 
     private _character: Character;
     private _cinematicComponent: CinematicComponent;
@@ -46,12 +47,14 @@ export default class PlayerInput implements ISceneComponent {
         if (movementComponent) {
             const axisX = this.getKeyAxis(PlayerInput.KEY_RIGHT) - this.getKeyAxis(PlayerInput.KEY_LEFT);
             const axisY = this.getKeyAxis(PlayerInput.KEY_FORWARD) - this.getKeyAxis(PlayerInput.KEY_BACKWARD);
+            const drift = InputManager.isKeyDown(PlayerInput.KEY_DRIFT, false);
             const respawn = InputManager.isKeyDown(PlayerInput.KEY_RESPAWN, true);
 
             const input = movementComponent.input;
             input.axis.x = axisX;
             input.axis.y = axisY;
             input.respawn = respawn;
+            input.drift = drift;
         }
     }
 

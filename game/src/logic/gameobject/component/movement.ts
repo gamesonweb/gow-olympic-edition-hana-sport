@@ -61,7 +61,7 @@ class MovementComponent extends Component {
 
         if (!isGrounded) {
             const velocity = this._physicsAggregate.body.getLinearVelocity();
-            if (Math.abs(velocity.y) < 0.1 && velocity.length() < 1) {
+            if (Math.abs(velocity.y) < 0.4) {
                 // move down
                 const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
                 const xDeg = this.parent.rotation.x * 180 / Math.PI;
@@ -84,7 +84,7 @@ class MovementComponent extends Component {
             const direction = this.input.axis.clone();
             direction.x = MovementComponent.clamp(direction.x, -1, 1);
             direction.y = MovementComponent.clamp(direction.y, -1, 1);
-            const targetSpeed = direction.y;
+            let targetSpeed = direction.y;
 
             let targetSpeedLerpCoefficient;
             if (Math.abs(targetSpeed) < 0.05) {
@@ -93,6 +93,11 @@ class MovementComponent extends Component {
                 targetSpeedLerpCoefficient = this._config.brake;
             } else {
                 targetSpeedLerpCoefficient = this._config.acceleration;
+            }
+
+            if (this.input.drift) {
+                targetSpeed /= 2;
+                targetSpeedLerpCoefficient = this._config.brake;
             }
 
             const forwardVelocity = new Vector2(currentVelocity.x, currentVelocity.z);
@@ -111,7 +116,8 @@ class MovementComponent extends Component {
 
             this._rotationRate = MovementComponent.lerp(this._rotationRate, direction.x, t * 10);
 
-            const targetAngularVelocity = this._config.rotationSpeed * this._rotationRate * this._speedRate;
+            const speedMultiplier = this.input.drift ? 4 : 1;
+            const targetAngularVelocity = this._config.rotationSpeed * this._rotationRate * this._speedRate * speedMultiplier;
             const angularVelocity = this._physicsAggregate.body.getAngularVelocity();
             angularVelocity.y = targetAngularVelocity;
             angularVelocity.x = Math.sign(angularVelocity.x) * Math.min(Math.abs(angularVelocity.x), 2);
@@ -197,6 +203,7 @@ class MovementComponent extends Component {
 class MovementInput {
     public axis: Vector2 = Vector2.Zero();
     public respawn: boolean = false;
+    public drift: boolean = false;
 }
 
 export default MovementComponent;

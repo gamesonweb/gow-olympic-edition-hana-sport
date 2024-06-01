@@ -474,7 +474,8 @@ proto.kart.JoinMatchmakingMsg.prototype.toObject = function(opt_includeInstance)
  */
 proto.kart.JoinMatchmakingMsg.toObject = function(includeInstance, msg) {
   var f, obj = {
-    characterConfigId: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    characterConfigId: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    mapConfigId: jspb.Message.getFieldWithDefault(msg, 3, 0)
   };
 
   if (includeInstance) {
@@ -515,6 +516,10 @@ proto.kart.JoinMatchmakingMsg.deserializeBinaryFromReader = function(msg, reader
       var value = /** @type {number} */ (reader.readUint32());
       msg.setCharacterConfigId(value);
       break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMapConfigId(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -551,6 +556,13 @@ proto.kart.JoinMatchmakingMsg.serializeBinaryToWriter = function(message, writer
       f
     );
   }
+  f = message.getMapConfigId();
+  if (f !== 0) {
+    writer.writeUint32(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -569,6 +581,24 @@ proto.kart.JoinMatchmakingMsg.prototype.getCharacterConfigId = function() {
  */
 proto.kart.JoinMatchmakingMsg.prototype.setCharacterConfigId = function(value) {
   return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
+/**
+ * optional uint32 map_config_id = 3;
+ * @return {number}
+ */
+proto.kart.JoinMatchmakingMsg.prototype.getMapConfigId = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.kart.JoinMatchmakingMsg} returns this
+ */
+proto.kart.JoinMatchmakingMsg.prototype.setMapConfigId = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 

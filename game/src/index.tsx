@@ -107,6 +107,7 @@ export const PageContext = createContext({
             time: '0:00.000'
         },
         maps: [{
+            id: 0,
             name: 'name',
             image: 'image',
             description: 'description',
@@ -147,6 +148,13 @@ const gameData = {
     },
     maps: [
         {
+            id: 2,
+            name: 'Messy room',
+            image: './assets/maps/Map1.png',
+            description: 'In the "Messy Room" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
+        },
+        {
+            id: 1,
             name: 'Messy room',
             image: './assets/maps/Map0.png',
             description: 'In the "Messy Room" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
@@ -156,9 +164,19 @@ const gameData = {
 }
 
 const loadSelection = () => {
+    if (gameData.id !== "") {
+        return gameData.selection;
+    }
     const selection = localStorage.getItem('selection')
     if (selection) {
-        return JSON.parse(selection)
+        const parsedValue = JSON.parse(selection)
+        const originalValue = gameData.selection
+        for (const key in originalValue) {
+            if (parsedValue[key]) {
+                originalValue[key] = parsedValue[key]
+            }
+        }
+        return originalValue
     } else {
         return gameData.selection
     }
@@ -222,7 +240,7 @@ export const PageProvider = () => {
         }
         localStorage.setItem('selection', JSON.stringify(data.selection))
         localStorage.setItem('id', data.id)
-    }, [data.selection.username, data.selection.keyboard, data.id])
+    }, [data.selection.username, data.selection.keyboard, data.id, data.selection.map, data.selection.vehicle])
 
 
     ApiClient.instance.onConnectionError = () => {
@@ -564,6 +582,27 @@ const BabylonScene = () => {
                                             }
                                         }
                                     }
+
+                                    const playerPositionScore = [];
+                                    for (const player of currentScene!.level.battle.players) {
+                                        const character = currentScene!.level.battle.getPlayerCharacterById(player.id);
+                                        const turnNumber = currentScene!.level.battle.getPlayerCurrentTurn(playerIndex);
+                                        const checkpointNumber = currentScene!.level.battle.getPlayerCurrentTurnCheckpointIndex(playerIndex);
+                                        const nextCheckpointNumber = (checkpointNumber + 1) % currentScene!.level.metadata.checkpoints.length;
+
+                                        const checkpoint = currentScene!.level.gameObjectManager.getObject(currentScene!.level.metadata.checkpoints[checkpointNumber]);
+                                        const nextCheckpoint = currentScene!.level.gameObjectManager.getObject(currentScene!.level.metadata.checkpoints[nextCheckpointNumber]);
+                                        const originalDistanceToNextCheckpoint = Vector3.Distance(checkpoint.position, nextCheckpoint.position);
+                                        const currentDistanceToNextCheckpoint = Vector3.Distance(character.position, nextCheckpoint.position);
+
+                                        const score = turnNumber * 1000000 + checkpointNumber * 1000 + Math.max(Math.floor((originalDistanceToNextCheckpoint - currentDistanceToNextCheckpoint) * 1000));
+                                        playerPositionScore.push({player, score});
+                                    }
+                                    playerPositionScore.sort((a, b) => b.score - a.score);
+                                    data.game.position = playerPositionScore.findIndex(p => p.player.id === data.id) + 1;
+                                    setData({
+                                        ...data,
+                                    });
                                 };
                                 engine.runRenderLoop(renderLoop);
                                 currentScene.onDisposeObservable.add(() => {
