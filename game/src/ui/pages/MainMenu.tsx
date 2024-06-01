@@ -38,6 +38,7 @@ function MainMenu() {
                 </div>
                 <div className='mm-buttons'>
                     <a onClick={() => page.setPage(PageType.Map)}>Multi Player</a>
+                    <a onClick={() => page.setPage(PageType.Leaderboard)}>Leaderboard</a>
                     <a onClick={() => page.setPage(PageType.Credits)}>Credits</a>
                     <a onClick={() => page.setPage(PageType.HowTo)}>How to play</a>
                     <a onClick={() => page.setPage(PageType.Company)}>HANA GAMES</a>
