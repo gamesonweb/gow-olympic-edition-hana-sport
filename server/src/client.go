@@ -44,6 +44,9 @@ func (c *Client) Name() string {
 
 func (c *Client) Send(message pb.Msg) {
 	log.Printf("sending message: %v", message.ProtoReflect().Descriptor().Name())
+	if c.disconnected {
+		return
+	}
 	c.send <- message
 }
 

@@ -277,8 +277,15 @@ func (b *BattleInstance) updateState() {
 			b.setState(pb.BattleState_RACING)
 		}
 	case pb.BattleState_RACING:
-		if b.isAllPlayersFinished() {
+		if b.isAllPlayersFinished() || (b.GetFirstPlayerTime() != 0 && b.getStateDuration() > time.Duration(b.GetFirstPlayerTime())*time.Second+60*time.Second) {
 			b.setState(pb.BattleState_FINISHED)
+
+			// set time for players who haven't finished
+			for _, player := range b.players {
+				if !player.Finished {
+					player.FinishTotalTime = b.GetFirstPlayerTime() + 60
+				}
+			}
 
 			playerFinishResult := make([]*pb.BattleFinishMsg_Player, 0, len(b.players))
 			for _, player := range b.players {
@@ -313,4 +320,13 @@ func (b *BattleInstance) isAllPlayersFinished() bool {
 		}
 	}
 	return true
+}
+
+func (b *BattleInstance) GetFirstPlayerTime() float32 {
+	for _, player := range b.players {
+		if player.Finished {
+			return player.FinishTotalTime
+		}
+	}
+	return 0
 }

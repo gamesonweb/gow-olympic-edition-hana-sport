@@ -8,34 +8,33 @@ import {PageType} from "../../PageType";
 function Leaderboard() {
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState(rankings[0]);
+    const {data} = useContext(PageContext);
     const [index, setIndex] = useState(0);
+
     const {setPage} = useContext(PageContext);
     const back = () => {
         setPage(PageType.MainMenu);
     }
 
     useEffect(() => {
-        fetch("http://localhost:8080/leaderboard?map=1")
+        fetch("https://kart-api.atrasis.net/leaderboard?map=" + data.maps[index].id)
             .then(response => response.json())
             .then(data => {
                 setRankings(data);
                 setLoading(false);
             });
-    }, []);
+    }, [index]);
     
     const previous = () => {
         console.log("Previous clicked");
-        const newIndex = (index - 1 + rankings.length) % rankings.length;
+        const newIndex = (index - 1 + data.maps.length) % data.maps.length;
         setIndex(newIndex);
-        setData(rankings[newIndex]);
     };
 
     const next = () => {
         console.log("Next clicked");
-        const newIndex = (index + 1) % rankings.length;
+        const newIndex = (index + 1) % data.maps.length;
         setIndex(newIndex);
-        setData(rankings[newIndex]);
     };
 
     return (
@@ -57,6 +56,7 @@ function Leaderboard() {
                                     const seconds = Math.floor(score % 60);
                                     const milliseconds = Math.floor((score - Math.floor(score)) * 1000);
                                     rank.time = `${minutes}:${seconds}.${milliseconds}`;
+                                    rank.rank = index + 1;
 
                                     return (
                                         <RankingComponent key={index} rank={rank.rank} name={rank.name} time={rank.time}/>
@@ -74,7 +74,7 @@ function Leaderboard() {
                         <button onClick={previous}>
                             Previous
                         </button>
-                        <p>{data.mapName}</p>
+                        <p>{data.maps[index].name}</p>
                         <button onClick={next}>
                             Next
                         </button>

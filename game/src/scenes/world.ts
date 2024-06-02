@@ -37,20 +37,12 @@ export default class WorldScene extends Scene {
     private _initData: BattleInitDataMsg;
 
     private _sun: DirectionalLight;
-    private _optimizer: SceneOptimizer;
 
     constructor(engine: Engine, config: SceneConfig, initData: BattleInitDataMsg) {
         super(engine);
         this._level = new Level(config, this);
         this._config = config;
         this._initData = initData;
-
-        this.onDispose = () => {
-            this._level.destroy();
-        };
-
-        const options = SceneOptimizerOptions.ModerateDegradationAllowed(60);
-        this._optimizer = new SceneOptimizer(this, options, true, true);
     }
 
     public get level(): Level {
@@ -122,7 +114,6 @@ export default class WorldScene extends Scene {
         skybox.material = skyboxMaterial;
 
         this._initialized = true;
-        //this._optimizer.start();
 
         await MeshProvider.instance.executeAsync();
 
@@ -157,11 +148,6 @@ export default class WorldScene extends Scene {
         const assetLoaderPromises = [];
 
         for (const model of this._config.models) {
-            // convert unity coordinates to babylon coordinates
-            //const position = new Vector3(model.position.x, model.position.y, model.position.z);
-            //const rotation = new Vector3(-model.rotation.x * Math.PI / 180, model.rotation.z * Math.PI / 180, model.rotation.y * Math.PI / 180);
-            //const scaling = new Vector3(-model.scale.x, model.scale.y, model.scale.z);
-
             assetLoaderPromises.push(this.loadModelAsync(assetRootPath + model.path, Vector3.Zero(), Vector3.Zero(), new Vector3(-1, 1, 1)));
         }
 
@@ -220,7 +206,7 @@ export default class WorldScene extends Scene {
             return;
         }
 
-        const step = Math.min(this.getEngine().getDeltaTime() / 1000, 1);
+        const step = Math.min(this.getEngine().getDeltaTime() / 1000, 0.1);
         this.getPhysicsEngine()._step(step);
         this._level.update(step);
     }
@@ -228,5 +214,10 @@ export default class WorldScene extends Scene {
     public update() {
         this.updateLogic();
         super.update();
+    }
+
+    destroy() {
+        super.destroy();
+        this._level.destroy();
     }
 }

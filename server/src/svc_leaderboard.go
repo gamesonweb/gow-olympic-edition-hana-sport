@@ -24,7 +24,7 @@ func NewLeaderboardService(redisEndpoint string, size int) *LeaderboardService {
 }
 
 func (l *LeaderboardService) AddScore(mapConfigId uint32, entry LeaderboardEntry) error {
-	err := l.redis.Do(context.Background(), l.redis.B().Zadd().Key("leaderboard-"+strconv.FormatInt(int64(mapConfigId), 10)).Gt().ScoreMember().ScoreMember(float64(entry.Score), entry.Id).Build()).Error()
+	err := l.redis.Do(context.Background(), l.redis.B().Zadd().Key("leaderboard-"+strconv.FormatInt(int64(mapConfigId), 10)).Lt().ScoreMember().ScoreMember(float64(entry.Score), entry.Id).Build()).Error()
 	if err != nil {
 		return errors.Wrap(err, "failed to add score")
 	}
@@ -37,7 +37,7 @@ func (l *LeaderboardService) AddScore(mapConfigId uint32, entry LeaderboardEntry
 }
 
 func (l *LeaderboardService) GetTopScores(mapConfigId uint32) ([]LeaderboardEntry, error) {
-	entries, err := l.redis.Do(context.Background(), l.redis.B().Zrevrange().Key("leaderboard-"+strconv.FormatInt(int64(mapConfigId), 10)).Start(0).Stop(0).Withscores().Build()).AsZScores()
+	entries, err := l.redis.Do(context.Background(), l.redis.B().Zrange().Key("leaderboard-"+strconv.FormatInt(int64(mapConfigId), 10)).Min("(0").Max("+inf").Byscore().Limit(0, int64(l.size)).Withscores().Build()).AsZScores()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get top scores")
 	}
@@ -64,7 +64,7 @@ func (l *LeaderboardService) GetTopScores(mapConfigId uint32) ([]LeaderboardEntr
 }
 
 type LeaderboardEntry struct {
-	Id    string
-	Name  string
-	Score float64
+	Id    string  `json:"id"`
+	Name  string  `json:"name"`
+	Score float64 `json:"score"`
 }

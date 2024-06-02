@@ -12,7 +12,6 @@ export default abstract class Scene extends BScene {
     engine.onDisposeObservable.add(() => {
         this.destroy();
     });
-    InputManager.init(this);
   }
 
   public async init(): Promise<void> {
@@ -20,13 +19,14 @@ export default abstract class Scene extends BScene {
     window.addEventListener("resize", () => {
       this.getEngine().resize();
     });
+    InputManager.init(this);
     MeshProvider.activeScene = this;
   }
 
   public update() {
     this.render();
 
-    const t = this.getEngine().getDeltaTime() / 1000;
+    const t = Math.min(this.getEngine().getDeltaTime() / 1000, 0.1);
     this._sceneComponents.forEach((component) => component.update(t));
 
     MeshProvider.instance.executeQueue();

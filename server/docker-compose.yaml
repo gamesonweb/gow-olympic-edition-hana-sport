@@ -5,4 +5,13 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "9100:8080"
+    environment:
+      - CONFIG_LEADERBOARD_REDISENDPOINT=kart-redis:6379
+    restart: unless-stopped
+  kart-redis:
+    image: redis:alpine
+    volumes:
+      - kart-redis-data:/data
+volumes:
+    kart-redis-data:

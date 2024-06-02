@@ -170,9 +170,9 @@ const gameData = {
     maps: [
         {
             id: 2,
-            name: 'Messy room',
+            name: 'Beach Vacation',
             image: './assets/maps/Map1.png',
-            description: 'In the "Messy Room" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
+            description: 'In the "Messy Vacation" map, players explore a cluttered teenager\'s bedroom, navigating clothes on the floor, piles of books, and faded posters on the walls to uncover hidden treasures and avoid traps.',
         },
         {
             id: 1,
@@ -400,8 +400,23 @@ const BabylonScene = () => {
                             engine = new Engine(view, true);
                         }
 
-                        if (PlatformUtil.isMobile()) {
-                            engine.enterFullscreen(true);
+                        // change viewport
+                        const updateViewport = () => {
+                            const viewport = document.querySelector('meta[name=viewport]');
+                            const screenRatio = window.innerWidth / window.innerHeight;
+                            if (screenRatio > 2.33) {
+                                viewport!.setAttribute('content', 'width=1920, user-scalable=no, minimal-ui');
+                            } else {
+                                viewport!.setAttribute('content', 'width=1280, user-scalable=no, minimal-ui, maximum-scale=1.0');
+                            }
+                        };
+                        updateViewport();
+                        window.addEventListener('resize', updateViewport);
+
+                        try {
+                            window.scrollTo(0, 1);
+                        } catch (e) {
+                            console.error('Failed to enter fullscreen', e);
                         }
                         engineRef.current = engine;
 
