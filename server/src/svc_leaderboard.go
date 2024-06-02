@@ -23,13 +23,22 @@ func NewLeaderboardService(redisEndpoint string, size int) *LeaderboardService {
 	}
 }
 
-func (l *LeaderboardService) AddScore(mapConfigId uint32, entry LeaderboardEntry) error {
-	err := l.redis.Do(context.Background(), l.redis.B().Zadd().Key("leaderboard-"+strconv.FormatInt(int64(mapConfigId), 10)).Lt().ScoreMember().ScoreMember(float64(entry.Score), entry.Id).Build()).Error()
+func (l *LeaderboardService) AddScore(mapConfigId uint32, entry []LeaderboardEntry) error {
+	// add score
+	req := l.redis.B().Zadd().Key("leaderboard-" + strconv.FormatInt(int64(mapConfigId), 10)).Lt().ScoreMember()
+	for _, e := range entry {
+		req = req.ScoreMember(e.Score, e.Id)
+	}
+	err := l.redis.Do(context.Background(), req.Build()).Error()
 	if err != nil {
 		return errors.Wrap(err, "failed to add score")
 	}
 	// update user id->name mapping
-	err = l.redis.Do(context.Background(), l.redis.B().Hset().Key("leaderboard_names").FieldValue().FieldValue(entry.Id, entry.Name).Build()).Error()
+	req2 := l.redis.B().Hset().Key("leaderboard_names").FieldValue()
+	for _, e := range entry {
+		req2 = req2.FieldValue(e.Id, e.Name)
+	}
+	err = l.redis.Do(context.Background(), req2.Build()).Error()
 	if err != nil {
 		return errors.Wrap(err, "failed to update name mapping")
 	}

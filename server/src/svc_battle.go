@@ -201,7 +201,15 @@ func (b *BattleInstance) handle(c *Client, msg pb.Msg) {
 			CheckpointIndex: msg.CheckpointIndex,
 		})
 	case *pb.BattleClientPlayerFinishMsg:
+		if msg.TotalTime < 20 {
+			log.Println("Player finished with invalid time: ", msg.TotalTime, " player: ", c.Id(), " name: ", c.Name(), " map: ", b.mapConfigId)
+			return
+		}
 		player := b.getPlayerById(c.Id())
+		if player.Finished {
+			log.Println("Player already finished: ", c.Id(), " name: ", c.Name(), " map: ", b.mapConfigId)
+			return
+		}
 		player.Finished = true
 		player.FinishTotalTime = msg.TotalTime
 		b.broadcast(&pb.BattleServerPlayerFinishMsg{
@@ -278,14 +286,16 @@ func (b *BattleInstance) updateState() {
 		}
 	case pb.BattleState_RACING:
 		if b.isAllPlayersFinished() || (b.GetFirstPlayerTime() != 0 && b.getStateDuration() > time.Duration(b.GetFirstPlayerTime())*time.Second+60*time.Second) {
-			b.setState(pb.BattleState_FINISHED)
-
 			// set time for players who haven't finished
 			for _, player := range b.players {
 				if !player.Finished {
-					player.FinishTotalTime = b.GetFirstPlayerTime() + 60
+					log.Println("Player: ", player.Id, " didn't finish. Setting time to: ", b.getStateDuration().Seconds())
+					player.FinishTotalTime = float32(b.getStateDuration().Seconds())
+					player.Finished = true
 				}
 			}
+
+			b.setState(pb.BattleState_FINISHED)
 
 			playerFinishResult := make([]*pb.BattleFinishMsg_Player, 0, len(b.players))
 			for _, player := range b.players {
@@ -299,14 +309,17 @@ func (b *BattleInstance) updateState() {
 				Players: playerFinishResult,
 			})
 			go func() {
+				leaderboardEntry := make([]LeaderboardEntry, 0, len(b.players))
 				for _, player := range b.players {
-					if err := Context.LeaderboardService.AddScore(b.mapConfigId, LeaderboardEntry{
+					log.Println("Player: ", player.Id, " finished with time: ", player.FinishTotalTime)
+					leaderboardEntry = append(leaderboardEntry, LeaderboardEntry{
 						Id:    player.Id,
 						Name:  player.Name,
 						Score: float64(player.FinishTotalTime),
-					}); err != nil {
-						log.Println("Failed to add score to leaderboard: ", err)
-					}
+					})
+				}
+				if err := Context.LeaderboardService.AddScore(b.mapConfigId, leaderboardEntry); err != nil {
+					log.Println("Failed to add score to leaderboard: ", err)
 				}
 			}()
 		}

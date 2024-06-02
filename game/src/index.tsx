@@ -596,7 +596,7 @@ const BabylonScene = () => {
                         });
                         ApiClient.instance.addHandler(11, (message: BattleFinishMsg) => {
                             if (currentScene) {
-                                const newRankings = message.getPlayersList().sort(x => x.getTotalTime()).map((ranking, index) => {
+                                const newRankings = message.getPlayersList().sort((a, b) => a.getTotalTime() - b.getTotalTime()).map((ranking, index) => {
                                     const totalSecs = ranking.getTotalTime();
                                     return {
                                         rank: index + 1,
@@ -717,8 +717,8 @@ const BabylonScene = () => {
                                     const playerPositionScore = [];
                                     for (const player of currentScene!.level.battle.players) {
                                         const character = currentScene!.level.battle.getPlayerCharacterById(player.id);
-                                        const turnNumber = currentScene!.level.battle.getPlayerCurrentTurn(playerIndex);
-                                        const checkpointNumber = currentScene!.level.battle.getPlayerCurrentTurnCheckpointIndex(playerIndex);
+                                        const turnNumber = currentScene!.level.battle.getPlayerCurrentTurn(character.playerIndex);
+                                        const checkpointNumber = currentScene!.level.battle.getPlayerCurrentTurnCheckpointIndex(character.playerIndex);
                                         const nextCheckpointNumber = (checkpointNumber + 1) % currentScene!.level.metadata.checkpoints.length;
 
                                         const checkpoint = currentScene!.level.gameObjectManager.getObject(currentScene!.level.metadata.checkpoints[checkpointNumber]);
@@ -726,7 +726,7 @@ const BabylonScene = () => {
                                         const originalDistanceToNextCheckpoint = Vector3.Distance(checkpoint.position, nextCheckpoint.position);
                                         const currentDistanceToNextCheckpoint = Vector3.Distance(character.position, nextCheckpoint.position);
 
-                                        const score = turnNumber * 1000000 + checkpointNumber * 1000 + Math.max(Math.floor((originalDistanceToNextCheckpoint - currentDistanceToNextCheckpoint) * 1000));
+                                        const score = turnNumber * 1000000 + checkpointNumber * 1000 + Math.max(Math.floor((originalDistanceToNextCheckpoint - currentDistanceToNextCheckpoint) * 1000), 0);
                                         playerPositionScore.push({player, score});
                                     }
                                     playerPositionScore.sort((a, b) => b.score - a.score);
